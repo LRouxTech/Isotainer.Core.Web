@@ -100,7 +100,7 @@ export function LoginPageComponent() {
                         validators={{
                             onChange: ({ value }) => {
                                 if (!value) return 'Password is required';
-                                if (value.length < 5) return 'Password must be at least 5 characters';
+                                if (value.length < 8) return 'Password must be at least 8 characters';
                                 return undefined;
                             },
                         }}
