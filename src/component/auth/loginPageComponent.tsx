@@ -45,7 +45,7 @@ export function LoginPageComponent() {
 
                 {loginMutation.isError && (
                     <div className="mb-5 rounded bg-error-container p-3 text-sm text-on-error-container font-medium border border-error/20">
-                        {(loginMutation.error as never).response?.data?.message || 'Invalid username or password.'}
+                        {(loginMutation.error).message || 'Invalid username or password.'}
                     </div>
                 )}
 
