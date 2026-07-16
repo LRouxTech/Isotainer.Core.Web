@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.index'
+import { Route as AuthenticatedWashingRouteImport } from './routes/_authenticated.washing'
+import { Route as AuthenticatedMasterDataRouteImport } from './routes/_authenticated.master-data'
+import { Route as AuthenticatedFinancialsRouteImport } from './routes/_authenticated.financials'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -27,27 +30,58 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedWashingRoute = AuthenticatedWashingRouteImport.update({
+  id: '/washing',
+  path: '/washing',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedMasterDataRoute = AuthenticatedMasterDataRouteImport.update({
+  id: '/master-data',
+  path: '/master-data',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedFinancialsRoute = AuthenticatedFinancialsRouteImport.update({
+  id: '/financials',
+  path: '/financials',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
+  '/financials': typeof AuthenticatedFinancialsRoute
+  '/master-data': typeof AuthenticatedMasterDataRoute
+  '/washing': typeof AuthenticatedWashingRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/financials': typeof AuthenticatedFinancialsRoute
+  '/master-data': typeof AuthenticatedMasterDataRoute
+  '/washing': typeof AuthenticatedWashingRoute
   '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/_authenticated/financials': typeof AuthenticatedFinancialsRoute
+  '/_authenticated/master-data': typeof AuthenticatedMasterDataRoute
+  '/_authenticated/washing': typeof AuthenticatedWashingRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login'
+  fullPaths: '/' | '/login' | '/financials' | '/master-data' | '/washing'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/'
-  id: '__root__' | '/_authenticated' | '/login' | '/_authenticated/'
+  to: '/login' | '/financials' | '/master-data' | '/washing' | '/'
+  id:
+    | '__root__'
+    | '/_authenticated'
+    | '/login'
+    | '/_authenticated/financials'
+    | '/_authenticated/master-data'
+    | '/_authenticated/washing'
+    | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -78,14 +112,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/washing': {
+      id: '/_authenticated/washing'
+      path: '/washing'
+      fullPath: '/washing'
+      preLoaderRoute: typeof AuthenticatedWashingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/master-data': {
+      id: '/_authenticated/master-data'
+      path: '/master-data'
+      fullPath: '/master-data'
+      preLoaderRoute: typeof AuthenticatedMasterDataRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/financials': {
+      id: '/_authenticated/financials'
+      path: '/financials'
+      fullPath: '/financials'
+      preLoaderRoute: typeof AuthenticatedFinancialsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedFinancialsRoute: typeof AuthenticatedFinancialsRoute
+  AuthenticatedMasterDataRoute: typeof AuthenticatedMasterDataRoute
+  AuthenticatedWashingRoute: typeof AuthenticatedWashingRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedFinancialsRoute: AuthenticatedFinancialsRoute,
+  AuthenticatedMasterDataRoute: AuthenticatedMasterDataRoute,
+  AuthenticatedWashingRoute: AuthenticatedWashingRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
