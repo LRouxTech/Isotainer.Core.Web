@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { AuthContext } from '../hooks/useAuth';
+import { AuthContext } from '../hooks/auth/useAuth.ts';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     // Sync reading on init prevents secondary render loops

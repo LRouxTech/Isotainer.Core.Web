@@ -1,7 +1,7 @@
 ﻿import { useMutation } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import {userAuthenticationService} from "../http/auth/user/userAuthenticationService.ts";
-import type {UserLoginRequest} from "../../model/auth/user/request/userLoginRequest.ts";
+import {userAuthenticationService} from "../../http/auth/user/userAuthenticationService.ts";
+import type {UserLoginRequest} from "../../../model/auth/user/request/userLoginRequest.ts";
 
 export const useLoginMutation = () => {
     const navigate = useNavigate();

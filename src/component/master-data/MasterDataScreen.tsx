@@ -1,23 +1,33 @@
 ﻿import React from 'react';
 import {Link} from "@tanstack/react-router";
+import {useGeneralCostStats} from "../../service/hooks/finance/useGeneralCost.ts";
+import {useCompanyStats} from "../../service/hooks/tank/useCompany.ts";
+import {useWashTypeStats} from "../../service/hooks/wash/useWashType.ts";
 
 interface MasterDataItem {
     id: string;
     title: string;
     description: string;
     icon: React.ReactNode;
-    count: number;
+    count: number | string;
+    isLoading: boolean;
     lastUpdated: string;
 }
 
 export function MasterDataScreen() {
+
+    const { data: generalCostStats, isLoading: isGeneralCostLoading, isError: isGeneralCostError } = useGeneralCostStats();
+    const { data: companyStats, isLoading: isCompanyLoading, isError: isCompanyError } = useCompanyStats();
+    const { data: washTypeStats, isLoading: isWashTypeLoading, isError: isWashTypeError } = useWashTypeStats();
+
     const masterDataItems: MasterDataItem[] = [
         {
             id: 'general-cost',
             title: 'General Cost',
             description: 'Configure standard pricing templates, logistics cost matrices, and flat overhead service fees.',
-            count: 14,
-            lastUpdated: '2 hours ago',
+            count: isGeneralCostLoading ? '...' : isGeneralCostError ? 0 : generalCostStats?.recordCount ?? 0,
+            lastUpdated: isGeneralCostLoading ? 'Loading...' : isGeneralCostError ? 'Unavailable' : generalCostStats?.lastUpdated ?? 'Never',
+            isLoading: isGeneralCostLoading,
             icon: (
                 <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <line x1="12" y1="1" x2="12" y2="23"/>
@@ -29,8 +39,9 @@ export function MasterDataScreen() {
             id: 'company',
             title: 'Company',
             description: 'Manage partner records, carrier clients, active industrial contractors, and billing configurations.',
-            count: 48,
-            lastUpdated: 'Yesterday',
+            count: isCompanyLoading ? '...' : isCompanyError ? 0 : companyStats?.recordCount ?? 0,
+            lastUpdated: isCompanyLoading ? 'Loading...' : isCompanyError ? 'Unavailable' : companyStats?.lastUpdated ?? 'Never',
+            isLoading: isCompanyLoading,
             icon: (
                 <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
@@ -42,8 +53,9 @@ export function MasterDataScreen() {
             id: 'wash-type',
             title: 'Wash Type',
             description: 'Define chemical treatment presets, tank wash classifications, temperatures, and cleaning durations.',
-            count: 8,
-            lastUpdated: 'Jul 12, 2026',
+            count: isWashTypeLoading ? '...' : isWashTypeError ? 0 : washTypeStats?.recordCount ?? 0,
+            lastUpdated: isWashTypeLoading ? 'Loading...' : isWashTypeError ? 'Unavailable' : washTypeStats?.lastUpdated ?? 'Never',
+            isLoading: isWashTypeLoading,
             icon: (
                 <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
@@ -54,7 +66,6 @@ export function MasterDataScreen() {
 
     return (
         <div className="space-y-6">
-            {/* Header Info */}
             <div>
                 <h1 className="text-2xl font-bold text-primary">Master Data Registry</h1>
                 <p className="text-sm text-on-surface-variant mt-1">
@@ -62,9 +73,8 @@ export function MasterDataScreen() {
                 </p>
             </div>
 
-            <hr className="border-outline-variant" />
+            <hr className="border-outline-variant"/>
 
-            {/* Grid Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {masterDataItems.map((item) => (
                     <Link
@@ -77,9 +87,14 @@ export function MasterDataScreen() {
                                 <div className="flex h-12 w-12 items-center justify-center rounded-md bg-primary/10 text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
                                     {item.icon}
                                 </div>
-                                <span className="text-xs font-bold tracking-wide text-outline bg-surface-container px-2.5 py-1 rounded-full uppercase">
-                  {item.count} Records
-                </span>
+
+                                {item.isLoading && item.id === 'general-cost' ? (
+                                    <div className="h-6 w-20 bg-surface-container rounded-full animate-pulse" />
+                                ) : (
+                                    <span className="text-xs font-bold tracking-wide text-outline bg-surface-container px-2.5 py-1 rounded-full uppercase">
+                    {item.count} {item.count === 1 ? 'Record' : 'Records'}
+                  </span>
+                                )}
                             </div>
 
                             <h2 className="text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
@@ -91,11 +106,16 @@ export function MasterDataScreen() {
                         </div>
 
                         <div className="mt-6 pt-4 border-t border-outline-variant/60 flex items-center justify-between text-xs text-outline font-medium">
-                            <span>Updated {item.lastUpdated}</span>
+                            {item.isLoading && item.id === 'general-cost' ? (
+                                <div className="h-4 w-28 bg-surface-container rounded animate-pulse" />
+                            ) : (
+                                <span>Updated {item.lastUpdated}</span>
+                            )}
+
                             <span className="flex items-center gap-1 text-primary font-bold group-hover:translate-x-1 transition-transform">
                 Configure
                 <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <polyline points="9 18 15 12 9 6" />
+                  <polyline points="9 18 15 12 9 6"/>
                 </svg>
               </span>
                         </div>

@@ -24,6 +24,8 @@ export function GeneralCostRoute() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState<GeneralCostRecord | undefined>(undefined);
 
+    // const { data: generalCostRecords, isLoading, isError } = useGeneralCostRecords();
+
     const handleOpenCreate = () => {
         setEditingItem(undefined);
         setIsModalOpen(true);

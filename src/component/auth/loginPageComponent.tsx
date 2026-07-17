@@ -1,6 +1,6 @@
 ﻿import { useState } from 'react';
 import { useForm } from '@tanstack/react-form';
-import {useLoginMutation} from "../../service/hooks/userLoginMutation.tsx";
+import {useLoginMutation} from "../../service/hooks/auth/userLoginMutation.tsx";
 import type {UserLoginRequest} from "../../model/auth/user/request/userLoginRequest.ts";
 
 export function LoginPageComponent() {
