@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.index'
 import { Route as AuthenticatedWashingRouteImport } from './routes/_authenticated.washing'
 import { Route as AuthenticatedMasterDataRouteImport } from './routes/_authenticated.master-data'
+import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated.home'
 import { Route as AuthenticatedFinancialsRouteImport } from './routes/_authenticated.financials'
 
 const LoginRoute = LoginRouteImport.update({
@@ -40,6 +41,11 @@ const AuthenticatedMasterDataRoute = AuthenticatedMasterDataRouteImport.update({
   path: '/master-data',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedFinancialsRoute = AuthenticatedFinancialsRouteImport.update({
   id: '/financials',
   path: '/financials',
@@ -50,12 +56,14 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
   '/financials': typeof AuthenticatedFinancialsRoute
+  '/home': typeof AuthenticatedHomeRoute
   '/master-data': typeof AuthenticatedMasterDataRoute
   '/washing': typeof AuthenticatedWashingRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/financials': typeof AuthenticatedFinancialsRoute
+  '/home': typeof AuthenticatedHomeRoute
   '/master-data': typeof AuthenticatedMasterDataRoute
   '/washing': typeof AuthenticatedWashingRoute
   '/': typeof AuthenticatedIndexRoute
@@ -65,20 +73,28 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/_authenticated/financials': typeof AuthenticatedFinancialsRoute
+  '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/master-data': typeof AuthenticatedMasterDataRoute
   '/_authenticated/washing': typeof AuthenticatedWashingRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/financials' | '/master-data' | '/washing'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/financials'
+    | '/home'
+    | '/master-data'
+    | '/washing'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/financials' | '/master-data' | '/washing' | '/'
+  to: '/login' | '/financials' | '/home' | '/master-data' | '/washing' | '/'
   id:
     | '__root__'
     | '/_authenticated'
     | '/login'
     | '/_authenticated/financials'
+    | '/_authenticated/home'
     | '/_authenticated/master-data'
     | '/_authenticated/washing'
     | '/_authenticated/'
@@ -126,6 +142,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMasterDataRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/home': {
+      id: '/_authenticated/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AuthenticatedHomeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/financials': {
       id: '/_authenticated/financials'
       path: '/financials'
@@ -138,6 +161,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedFinancialsRoute: typeof AuthenticatedFinancialsRoute
+  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedMasterDataRoute: typeof AuthenticatedMasterDataRoute
   AuthenticatedWashingRoute: typeof AuthenticatedWashingRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
@@ -145,6 +169,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFinancialsRoute: AuthenticatedFinancialsRoute,
+  AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedMasterDataRoute: AuthenticatedMasterDataRoute,
   AuthenticatedWashingRoute: AuthenticatedWashingRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,

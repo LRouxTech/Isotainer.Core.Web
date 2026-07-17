@@ -4,23 +4,21 @@ import {Sidebar} from "../component/navigation/Sidebar.tsx";
 
 export const Route = createFileRoute('/_authenticated')({
     beforeLoad: ({ context, location }) => {
-        // Startup state check: If not logged in, intercept and send to login
         if (!context.auth.isAuthenticated) {
             throw redirect({
                 to: '/login',
                 search: {
-                    // Captures where they tried to go so you can route them back after logging in
                     redirect: location.href,
                 },
             });
         }
     },
     component: () => (
-        <div className="flex flex-col min-h-screen bg-background">
-            <TopNavBar />
+        <div className="flex min-h-screen bg-background">
+            <Sidebar />
 
-            <div className="flex flex-1">
-                <Sidebar />
+            <div className="flex flex-1 flex-col min-h-screen">
+                <TopNavBar />
 
                 <main className="flex-1 bg-surface-container-lowest overflow-y-auto p-8">
                     <Outlet />

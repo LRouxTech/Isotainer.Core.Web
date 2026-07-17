@@ -4,12 +4,10 @@ export function Sidebar() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Clear storage and kick user back to login screen
         localStorage.removeItem('jwt_token');
         navigate({ to: '/login' });
     };
 
-    // Shared active styles for layout synchronization
     const linkActiveProps = {
         className: 'flex items-center gap-3 h-[40px] px-4 rounded bg-primary/10 text-primary font-semibold transition-all'
     };
@@ -19,20 +17,15 @@ export function Sidebar() {
     };
 
     return (
-        <aside className="w-[240px] border-r border-outline-variant bg-surface-container-lowest flex flex-col justify-between h-[calc(100vh-64px)] sticky top-16 select-none shrink-0">
-
-            {/* Top Section: Branding & Route Menu */}
+        <aside className="w-[240px] border-r border-outline-variant bg-surface-container-lowest flex flex-col justify-between h-screen sticky top-0 select-none shrink-0">
             <div className="p-4 flex flex-col gap-6">
 
-                {/* Brand Header */}
                 <div className="px-4">
                     <h2 className="text-base font-bold text-primary tracking-tight">ISO-Logistics</h2>
                     <p className="text-[11px] font-bold tracking-wider text-outline uppercase mt-0.5">Tank Management</p>
                 </div>
 
-                {/* Dynamic Route Navigation List */}
                 <nav className="flex flex-col gap-1.5">
-                    {/* 1. Dashboard Link (Points to home index route) */}
                     <Link
                         to="/"
                         activeProps={linkActiveProps}
@@ -48,7 +41,6 @@ export function Sidebar() {
                         <span className="text-sm">Dashboard</span>
                     </Link>
 
-                    {/* 2. Washing Link */}
                     <Link
                         to="/washing"
                         activeProps={linkActiveProps}
@@ -60,7 +52,6 @@ export function Sidebar() {
                         <span className="text-sm">Washing</span>
                     </Link>
 
-                    {/* 3. Financials Link */}
                     <Link
                         to="/financials"
                         activeProps={linkActiveProps}
@@ -75,7 +66,6 @@ export function Sidebar() {
                 </nav>
             </div>
 
-            {/* Bottom Section: Sole Logout Control Action */}
             <div className="p-4 border-t border-outline-variant">
                 <button
                     onClick={handleLogout}
