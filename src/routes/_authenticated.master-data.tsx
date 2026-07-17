@@ -1,6 +1,5 @@
-﻿import { createFileRoute } from '@tanstack/react-router';
-import {MasterDataScreen} from "../component/master-data/MasterDataScreen.tsx";
+﻿import {createFileRoute, Outlet} from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_authenticated/master-data')({
-    component: MasterDataScreen,
+    component: () => <Outlet />, // This allows sub-routes to render cleanly!
 });

@@ -16,6 +16,7 @@ import { Route as AuthenticatedWashingRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedMasterDataRouteImport } from './routes/_authenticated.master-data'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated.home'
 import { Route as AuthenticatedFinancialsRouteImport } from './routes/_authenticated.financials'
+import { Route as AuthenticatedMasterDataIndexRouteImport } from './routes/_authenticated.master-data.index'
 import { Route as AuthenticatedMasterDataWashTypeRouteImport } from './routes/_authenticated.master-data.wash-type'
 import { Route as AuthenticatedMasterDataGeneralCostRouteImport } from './routes/_authenticated.master-data.general-cost'
 import { Route as AuthenticatedMasterDataCompanyRouteImport } from './routes/_authenticated.master-data.company'
@@ -54,6 +55,12 @@ const AuthenticatedFinancialsRoute = AuthenticatedFinancialsRouteImport.update({
   path: '/financials',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedMasterDataIndexRoute =
+  AuthenticatedMasterDataIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedMasterDataRoute,
+  } as any)
 const AuthenticatedMasterDataWashTypeRoute =
   AuthenticatedMasterDataWashTypeRouteImport.update({
     id: '/wash-type',
@@ -83,17 +90,18 @@ export interface FileRoutesByFullPath {
   '/master-data/company': typeof AuthenticatedMasterDataCompanyRoute
   '/master-data/general-cost': typeof AuthenticatedMasterDataGeneralCostRoute
   '/master-data/wash-type': typeof AuthenticatedMasterDataWashTypeRoute
+  '/master-data/': typeof AuthenticatedMasterDataIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/financials': typeof AuthenticatedFinancialsRoute
   '/home': typeof AuthenticatedHomeRoute
-  '/master-data': typeof AuthenticatedMasterDataRouteWithChildren
   '/washing': typeof AuthenticatedWashingRoute
   '/': typeof AuthenticatedIndexRoute
   '/master-data/company': typeof AuthenticatedMasterDataCompanyRoute
   '/master-data/general-cost': typeof AuthenticatedMasterDataGeneralCostRoute
   '/master-data/wash-type': typeof AuthenticatedMasterDataWashTypeRoute
+  '/master-data': typeof AuthenticatedMasterDataIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/_authenticated/master-data/company': typeof AuthenticatedMasterDataCompanyRoute
   '/_authenticated/master-data/general-cost': typeof AuthenticatedMasterDataGeneralCostRoute
   '/_authenticated/master-data/wash-type': typeof AuthenticatedMasterDataWashTypeRoute
+  '/_authenticated/master-data/': typeof AuthenticatedMasterDataIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -120,17 +129,18 @@ export interface FileRouteTypes {
     | '/master-data/company'
     | '/master-data/general-cost'
     | '/master-data/wash-type'
+    | '/master-data/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/financials'
     | '/home'
-    | '/master-data'
     | '/washing'
     | '/'
     | '/master-data/company'
     | '/master-data/general-cost'
     | '/master-data/wash-type'
+    | '/master-data'
   id:
     | '__root__'
     | '/_authenticated'
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/_authenticated/master-data/company'
     | '/_authenticated/master-data/general-cost'
     | '/_authenticated/master-data/wash-type'
+    | '/_authenticated/master-data/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -201,6 +212,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFinancialsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/master-data/': {
+      id: '/_authenticated/master-data/'
+      path: '/'
+      fullPath: '/master-data/'
+      preLoaderRoute: typeof AuthenticatedMasterDataIndexRouteImport
+      parentRoute: typeof AuthenticatedMasterDataRoute
+    }
     '/_authenticated/master-data/wash-type': {
       id: '/_authenticated/master-data/wash-type'
       path: '/wash-type'
@@ -229,6 +247,7 @@ interface AuthenticatedMasterDataRouteChildren {
   AuthenticatedMasterDataCompanyRoute: typeof AuthenticatedMasterDataCompanyRoute
   AuthenticatedMasterDataGeneralCostRoute: typeof AuthenticatedMasterDataGeneralCostRoute
   AuthenticatedMasterDataWashTypeRoute: typeof AuthenticatedMasterDataWashTypeRoute
+  AuthenticatedMasterDataIndexRoute: typeof AuthenticatedMasterDataIndexRoute
 }
 
 const AuthenticatedMasterDataRouteChildren: AuthenticatedMasterDataRouteChildren =
@@ -237,6 +256,7 @@ const AuthenticatedMasterDataRouteChildren: AuthenticatedMasterDataRouteChildren
     AuthenticatedMasterDataGeneralCostRoute:
       AuthenticatedMasterDataGeneralCostRoute,
     AuthenticatedMasterDataWashTypeRoute: AuthenticatedMasterDataWashTypeRoute,
+    AuthenticatedMasterDataIndexRoute: AuthenticatedMasterDataIndexRoute,
   }
 
 const AuthenticatedMasterDataRouteWithChildren =
