@@ -1,4 +1,5 @@
 ﻿import React from 'react';
+import {Link} from "@tanstack/react-router";
 
 interface MasterDataItem {
     id: string;
@@ -19,8 +20,8 @@ export function MasterDataScreen() {
             lastUpdated: '2 hours ago',
             icon: (
                 <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <line x1="12" y1="1" x2="12" y2="23" />
-                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    <line x1="12" y1="1" x2="12" y2="23"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                 </svg>
             ),
         },
@@ -32,8 +33,8 @@ export function MasterDataScreen() {
             lastUpdated: 'Yesterday',
             icon: (
                 <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
                 </svg>
             ),
         },
@@ -45,7 +46,7 @@ export function MasterDataScreen() {
             lastUpdated: 'Jul 12, 2026',
             icon: (
                 <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
                 </svg>
             ),
         },
@@ -63,21 +64,19 @@ export function MasterDataScreen() {
 
             <hr className="border-outline-variant" />
 
-            {/* Responsive Grid Layout */}
+            {/* Grid Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {masterDataItems.map((item) => (
-                    <div
+                    <Link
                         key={item.id}
-                        className="group relative flex flex-col justify-between rounded-lg border border-outline-variant bg-surface-container-lowest p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40 cursor-pointer"
+                        to={`/master-data/${item.id}`}
+                        className="group relative flex flex-col justify-between rounded-lg border border-outline-variant bg-surface-container-lowest p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40 cursor-pointer text-left"
                     >
-                        {/* Card Content Top */}
                         <div>
                             <div className="flex items-center justify-between mb-4">
-                                {/* Icon Shell */}
                                 <div className="flex h-12 w-12 items-center justify-center rounded-md bg-primary/10 text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
                                     {item.icon}
                                 </div>
-                                {/* Metric Badge */}
                                 <span className="text-xs font-bold tracking-wide text-outline bg-surface-container px-2.5 py-1 rounded-full uppercase">
                   {item.count} Records
                 </span>
@@ -91,7 +90,6 @@ export function MasterDataScreen() {
                             </p>
                         </div>
 
-                        {/* Card Footer Metadata */}
                         <div className="mt-6 pt-4 border-t border-outline-variant/60 flex items-center justify-between text-xs text-outline font-medium">
                             <span>Updated {item.lastUpdated}</span>
                             <span className="flex items-center gap-1 text-primary font-bold group-hover:translate-x-1 transition-transform">
@@ -101,7 +99,7 @@ export function MasterDataScreen() {
                 </svg>
               </span>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </div>
