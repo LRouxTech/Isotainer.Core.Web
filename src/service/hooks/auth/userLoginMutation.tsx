@@ -9,14 +9,15 @@ export const useLoginMutation = () => {
 
     return useMutation({
         mutationFn: (values: UserLoginRequest) => userAuthenticationService.login(values),
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             localStorage.setItem('jwt_token', data.tokenValue);
+            const { ...profileData } = data;
 
-            // Force instant window redirect or router push back to secure dashboard
+            localStorage.setItem('user_profile', JSON.stringify(profileData));
             if (search.redirect) {
                 window.location.href = search.redirect;
             } else {
-                navigate({ to: '/' });
+                await navigate({ to: '/' });
             }
         },
     });

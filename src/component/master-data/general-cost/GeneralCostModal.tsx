@@ -1,31 +1,39 @@
-﻿import { useForm } from '@tanstack/react-form';
-import {Modal} from "../../ui/Modal.tsx";
-
-export interface GeneralCostFormValues {
-    itemName: string;
-    costCode: string;
-    price: number;
-}
+﻿import { useEffect } from 'react';
+import { useForm } from '@tanstack/react-form';
+import { Modal } from "../../ui/Modal.tsx";
+import type { GeneralCostItem } from "../../../model/finance/generalCost/generalCostListResponse.ts";
 
 interface GeneralCostModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (values: GeneralCostFormValues) => void;
-    defaultValues?: GeneralCostFormValues;
+    onSubmit: (values: GeneralCostItem) => void;
+    defaultValues?: GeneralCostItem;
 }
 
 export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues }: GeneralCostModalProps) {
+    // 1. Initialize TanStack Form explicitly tied to your GeneralCostItem model fields
     const form = useForm({
-        defaultValues: defaultValues || {
-            itemName: '',
-            costCode: '',
-            price: 0,
-        },
+        defaultValues: {
+            generalCostId: defaultValues?.generalCostId ?? '',
+            name: defaultValues?.name ?? '',
+            cost: defaultValues?.cost ?? 0,
+        } satisfies GeneralCostItem,
         onSubmit: async ({ value }) => {
             onSubmit(value);
             onClose();
         },
     });
+
+    // 2. Clear out stale input cached states when a user swaps rows or creates a brand new item
+    useEffect(() => {
+        if (isOpen) {
+            form.reset({
+                generalCostId: defaultValues?.generalCostId ?? '',
+                name: defaultValues?.name ?? '',
+                cost: defaultValues?.cost ?? 0,
+            });
+        }
+    }, [defaultValues, isOpen, form]);
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Set General Cost Item" maxWidthClass="max-w-[440px]">
@@ -37,9 +45,9 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues }: G
                 }}
                 className="space-y-4"
             >
-                {/* Item Name Input (Disabled if editing) */}
+                {/* Item Name Input */}
                 <form.Field
-                    name="itemName"
+                    name="name"
                     validators={{
                         onChange: ({ value }) => (!value ? 'Item Name is required' : undefined),
                     }}
@@ -67,9 +75,9 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues }: G
                     )}
                 </form.Field>
 
-                {/* Cost Code Input */}
+                {/* Cost Code Identifier Input */}
                 <form.Field
-                    name="costCode"
+                    name="generalCostId"
                     validators={{
                         onChange: ({ value }) => (!value ? 'Cost Code is required' : undefined),
                     }}
@@ -77,16 +85,18 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues }: G
                     {(field) => (
                         <div>
                             <label htmlFor={field.name} className="block text-xs font-bold text-on-surface uppercase tracking-wider mb-1.5">
-                                Cost Code
+                                Cost Code (ID)
                             </label>
                             <input
                                 id={field.name}
                                 name={field.name}
                                 value={field.state.value}
                                 onBlur={field.handleBlur}
-                                onChange={(e) => field.handleChange(e.target.value.toUpperCase())} // Auto force uppercase codes
+                                // If editing an existing item, treat it as read-only to prevent breaking relational lookups
+                                disabled={!!defaultValues?.generalCostId}
+                                onChange={(e) => field.handleChange(e.target.value.toUpperCase())}
                                 placeholder="e.g. SRCH-STD-01"
-                                className={`w-full h-[36px] rounded border bg-surface-container-lowest px-3 text-sm text-on-surface placeholder:text-outline transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none ${
+                                className={`w-full h-[36px] rounded border bg-surface-container-lowest px-3 text-sm text-on-surface placeholder:text-outline transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none disabled:bg-surface-container/40 disabled:text-outline disabled:cursor-not-allowed ${
                                     field.state.meta.errors.length ? 'border-error focus:border-error focus:ring-error/20' : 'border-outline-variant'
                                 }`}
                             />
@@ -97,14 +107,15 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues }: G
                     )}
                 </form.Field>
 
-                {/* Price Input (Number Validation) */}
+                {/* Cost/Price Input */}
                 <form.Field
-                    name="price"
+                    name="cost"
                     validators={{
                         onChange: ({ value }) => {
-                            if (value === undefined || value === null) return 'Price is required';
-                            if (isNaN(value)) return 'Price must be a number';
-                            if (value < 0) return 'Price cannot be negative';
+                            if (value === undefined || value === null || value === 0) return 'Price is required';
+                            const numValue = Number(value);
+                            if (isNaN(numValue)) return 'Price must be a number';
+                            if (numValue < 0) return 'Price cannot be negative';
                             return undefined;
                         },
                     }}
@@ -115,9 +126,9 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues }: G
                                 Price (USD)
                             </label>
                             <div className="relative flex items-center h-[36px]">
-                <span className="absolute left-3 text-sm font-bold text-outline select-none">
-                  $
-                </span>
+                                <span className="absolute left-3 text-sm font-bold text-outline select-none">
+                                    $
+                                </span>
                                 <input
                                     id={field.name}
                                     name={field.name}
@@ -125,7 +136,10 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues }: G
                                     step="0.01"
                                     value={field.state.value}
                                     onBlur={field.handleBlur}
-                                    onChange={(e) => field.handleChange(parseFloat(e.target.value) || 0)}
+                                    onChange={(e) => {
+                                        const raw = e.target.value;
+                                        field.handleChange(raw === '' ? 0 : parseFloat(raw));
+                                    }}
                                     placeholder="0.00"
                                     className={`w-full h-full rounded border bg-surface-container-lowest pl-7 pr-3 text-sm text-on-surface placeholder:text-outline transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none ${
                                         field.state.meta.errors.length ? 'border-error focus:border-error focus:ring-error/20' : 'border-outline-variant'

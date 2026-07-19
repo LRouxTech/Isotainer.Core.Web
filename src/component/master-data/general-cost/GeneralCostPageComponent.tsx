@@ -1,69 +1,42 @@
-﻿import {useState} from "react";
-import {type GeneralCostFormValues, GeneralCostModal} from "./GeneralCostModal.tsx";
-import type {ColumnDef} from "@tanstack/react-table";
-import {Link} from "@tanstack/react-router";
-import {DataTable} from "../../ui/DataTable.tsx";
-
-interface GeneralCostRecord {
-    id: string;
-    itemName: string;
-    costCode: string;
-    price: number;
-}
-
-const initialCosts: GeneralCostRecord[] = [
-    { id: '1', itemName: 'Standard Chemical Wash', costCode: 'WASH-STD', price: 450.00 },
-    { id: '2', itemName: 'Heated Recirculation Surcharge', costCode: 'WASH-HEAT', price: 120.00 },
-    { id: '3', itemName: 'Overnight Storage Fee', costCode: 'STOR-24H', price: 75.00 },
-    { id: '4', itemName: 'Isotainer Nitrogen Purge', costCode: 'GAS-N2', price: 210.00 },
-    { id: '5', itemName: 'Late Pick-up Fee', costCode: 'PEN-LATE', price: 150.00 },
-];
+﻿import { useState } from "react";
+import { GeneralCostModal } from "./GeneralCostModal.tsx";
+import type { ColumnDef } from "@tanstack/react-table";
+import { Link } from "@tanstack/react-router";
+import { DataTable } from "../../ui/DataTable.tsx";
+import type { GeneralCostItem } from "../../../model/finance/generalCost/generalCostListResponse.ts";
+import { useGeneralCostRecords } from "../../../service/hooks/finance/useGeneralCost.ts";
 
 export function GeneralCostRoute() {
-    const [costs, setCosts] = useState<GeneralCostRecord[]>(initialCosts);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingItem, setEditingItem] = useState<GeneralCostRecord | undefined>(undefined);
+    const [editingItem, setEditingItem] = useState<GeneralCostItem | undefined>(undefined);
 
-    // const { data: generalCostRecords, isLoading, isError } = useGeneralCostRecords();
+    const { data: recordsResponse, isLoading, isError } = useGeneralCostRecords();
 
-    const handleOpenCreate = () => {
-        setEditingItem(undefined);
-        setIsModalOpen(true);
-    };
-
-    const handleOpenEdit = (item: GeneralCostRecord) => {
+    const handleOpenEdit = (item: GeneralCostItem) => {
         setEditingItem(item);
         setIsModalOpen(true);
     };
 
-    const handleSubmitForm = (values: GeneralCostFormValues) => {
+    const handleSubmitForm = (values: GeneralCostItem) => {
         if (editingItem) {
-            // Edit mode
-            setCosts(prev => prev.map(c => c.id === editingItem.id ? { ...c, ...values } : c));
-        } else {
-            // Create mode
-            const newItem: GeneralCostRecord = {
-                id: crypto.randomUUID(),
-                ...values,
-            };
-            setCosts(prev => [newItem, ...prev]);
+            console.log("Submitting updates via form entry:", values);
+            setIsModalOpen(false);
         }
     };
 
-    const columns: ColumnDef<GeneralCostRecord>[] = [
+    const columns: ColumnDef<GeneralCostItem>[] = [
         {
-            accessorKey: 'itemName',
-            header: 'Item Name',
+            accessorKey: 'name',
+            header: 'Name',
         },
         {
-            accessorKey: 'costCode',
-            header: 'Cost Code',
-            cell: ({ getValue }) => <code className="bg-surface-container px-2 py-0.5 rounded text-xs text-primary font-bold">{getValue<string>()}</code>,
-        },
-        {
-            accessorKey: 'price',
+            accessorKey: 'cost',
             header: 'Price',
-            cell: ({ getValue }) => <span className="font-mono text-on-surface font-bold">${getValue<number>().toFixed(2)}</span>,
+            cell: ({ getValue }) => (
+                <span className="font-mono text-on-surface font-bold">
+                    ${getValue<number>().toFixed(2)}
+                </span>
+            ),
         },
         {
             id: 'actions',
@@ -79,6 +52,8 @@ export function GeneralCostRoute() {
         },
     ];
 
+    const tableData = recordsResponse?.generalCosts ?? [];
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -93,16 +68,26 @@ export function GeneralCostRoute() {
                         <p className="text-xs text-on-surface-variant">Manage global service pricing structures.</p>
                     </div>
                 </div>
-
-                <button
-                    onClick={handleOpenCreate}
-                    className="h-[36px] px-4 rounded bg-primary text-sm font-semibold text-on-primary hover:bg-primary/90 transition-colors"
-                >
-                    Add Cost Item
-                </button>
             </div>
 
-            <DataTable columns={columns} data={costs} pageSize={5} />
+            {isLoading ? (
+                <div className="flex flex-col items-center justify-center h-48 rounded-lg border border-outline-variant bg-surface-container-lowest gap-3">
+                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                    <p className="text-xs text-outline font-medium">Fetching price matrices...</p>
+                </div>
+            ) : isError ? (
+                <div className="flex flex-col items-center justify-center h-48 rounded-lg border border-error/20 bg-error-container/10 p-4 text-center">
+                    <svg className="text-error mb-2" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <p className="text-sm font-bold text-on-surface">Failed to load cost configurations</p>
+                    <p className="text-xs text-on-surface-variant mt-1">Please verify your server connection and try again.</p>
+                </div>
+            ) : (
+                <DataTable columns={columns} data={tableData} pageSize={5} />
+            )}
 
             <GeneralCostModal
                 isOpen={isModalOpen}

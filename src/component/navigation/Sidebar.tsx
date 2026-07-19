@@ -1,11 +1,26 @@
-﻿import { Link, useNavigate } from '@tanstack/react-router';
+﻿import {Link, useNavigate, useRouter} from '@tanstack/react-router';
+import {userAuthenticationService} from "../../service/http/auth/user/userAuthenticationService.ts";
+import {useCurrentUser} from "../../service/hooks/auth/useCurrentUser.tsx";
 
 export function Sidebar() {
     const navigate = useNavigate();
+    const router = useRouter();
+    const user = useCurrentUser();
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        if(user?.userId)
+            await userAuthenticationService.logout({
+                userId: user?.userId,
+        });
+
         localStorage.removeItem('jwt_token');
-        navigate({ to: '/login' });
+        localStorage.removeItem('user_profile');
+        await router.invalidate();
+
+        await navigate({
+            to: '/login',
+            search: {}
+        });
     };
 
     const linkActiveProps = {
