@@ -1,31 +1,27 @@
-import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { routeTree } from './routeTree.gen.ts';
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {createRouter, RouterProvider} from '@tanstack/react-router';
+import {routeTree} from './routeTree.gen.ts';
+import {QueryClientProvider} from "@tanstack/react-query";
+import {queryClient} from "./QueryClient.tsx";
+import {useCurrentUser} from "./service/hooks/auth/useCurrentUser.tsx";
 
 const router = createRouter({
     routeTree,
     context: {
-        auth: undefined!,
-    },
-});
-
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            refetchOnWindowFocus: false,
-            retry: 1,
-        },
+        auth: { isAuthenticated: false },
     },
 });
 
 function RouterWrapper() {
-    const hasToken = !!localStorage.getItem('jwt_token');
+    const user = useCurrentUser();
+    const hasToken = localStorage.getItem('jwt_token');
+
+    const isAuthenticated = Boolean(hasToken && user);
 
     return (
         <RouterProvider
             router={router}
             context={{
-                auth: { isAuthenticated: hasToken }
+                auth: { isAuthenticated: isAuthenticated }
             }}
         />
     );

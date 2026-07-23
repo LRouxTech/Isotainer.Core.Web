@@ -1,6 +1,7 @@
 ﻿import {Link, useNavigate, useRouter} from '@tanstack/react-router';
 import {userAuthenticationService} from "../../service/http/auth/user/userAuthenticationService.ts";
-import {useCurrentUser} from "../../service/hooks/auth/useCurrentUser.tsx";
+import {notifyAuthChange, useCurrentUser} from "../../service/hooks/auth/useCurrentUser.tsx";
+import {queryClient} from "./../../QueryClient.tsx";
 
 export function Sidebar() {
     const navigate = useNavigate();
@@ -8,19 +9,28 @@ export function Sidebar() {
     const user = useCurrentUser();
 
     const handleLogout = async () => {
-        if(user?.userId)
-            await userAuthenticationService.logout({
-                userId: user?.userId,
-        });
+        try {
+            if (user?.userId) {
+                await userAuthenticationService.logout({ userId: user.userId });
+            }
+        } catch (error) {
+            console.warn('Logout API failed, clearing local session anyway:', error);
+        } finally {
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('user_profile');
 
-        localStorage.removeItem('jwt_token');
-        localStorage.removeItem('user_profile');
-        await router.invalidate();
+            notifyAuthChange();
 
-        await navigate({
-            to: '/login',
-            search: {}
-        });
+            queryClient.clear();
+
+            await router.invalidate();
+
+            await navigate({
+                to: '/login',
+                search: {},
+                replace: true,
+            });
+        }
     };
 
     const linkActiveProps = {
@@ -84,7 +94,7 @@ export function Sidebar() {
             <div className="p-4 border-t border-outline-variant">
                 <button
                     onClick={handleLogout}
-                    className="flex w-full items-center gap-3 h-[40px] px-4 rounded text-error hover:bg-error-container/20 font-medium transition-all focus:outline-none"
+                    className="flex w-full items-center gap-3 h-[40px] px-4 rounded text-error hover:bg-error-container/20 font-medium transition-all focus:outline-none cursor-pointer"
                 >
                     <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
