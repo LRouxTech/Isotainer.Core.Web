@@ -12,8 +12,8 @@ export const generalCostService = {
         return response.data;
     },
 
-    updateGeneralCost: async (request: UpdateGeneralCostRequest): Promise<GeneralCostUpdateResponse> => {
-        const response = await axiosInstance.put<GeneralCostUpdateResponse>(`${API_BASE_URL}/`, request);
+    updateGeneralCost: async (request: UpdateGeneralCostRequest, id: string): Promise<GeneralCostUpdateResponse> => {
+        const response = await axiosInstance.put<GeneralCostUpdateResponse>(`${API_BASE_URL}/${id}`, request);
         return response.data;
     },
 

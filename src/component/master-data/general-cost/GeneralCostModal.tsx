@@ -8,19 +8,19 @@ interface GeneralCostModalProps {
     onClose: () => void;
     onSubmit: (values: GeneralCostItem) => void;
     defaultValues?: GeneralCostItem;
+    isSubmitting?: boolean;
 }
 
-export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues }: GeneralCostModalProps) {
+export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues, isSubmitting = false }: GeneralCostModalProps) {
     // 1. Initialize TanStack Form explicitly tied to your GeneralCostItem model fields
     const form = useForm({
         defaultValues: {
             generalCostId: defaultValues?.generalCostId ?? '',
             name: defaultValues?.name ?? '',
             cost: defaultValues?.cost ?? 0,
-        } satisfies GeneralCostItem,
+        },
         onSubmit: async ({ value }) => {
-            onSubmit(value);
-            onClose();
+            await onSubmit(value);
         },
     });
 
@@ -62,41 +62,8 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues }: G
                                 name={field.name}
                                 value={field.state.value}
                                 onBlur={field.handleBlur}
-                                onChange={(e) => field.handleChange(e.target.value)}
-                                placeholder="e.g. Standard Wash Surcharge"
+                                disabled={true}
                                 className={`w-full h-[36px] rounded border bg-surface-container-lowest px-3 text-sm text-on-surface placeholder:text-outline transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none ${
-                                    field.state.meta.errors.length ? 'border-error focus:border-error focus:ring-error/20' : 'border-outline-variant'
-                                }`}
-                            />
-                            {field.state.meta.errors.length > 0 && (
-                                <p className="mt-1 text-xs font-medium text-error">{field.state.meta.errors.join(', ')}</p>
-                            )}
-                        </div>
-                    )}
-                </form.Field>
-
-                {/* Cost Code Identifier Input */}
-                <form.Field
-                    name="generalCostId"
-                    validators={{
-                        onChange: ({ value }) => (!value ? 'Cost Code is required' : undefined),
-                    }}
-                >
-                    {(field) => (
-                        <div>
-                            <label htmlFor={field.name} className="block text-xs font-bold text-on-surface uppercase tracking-wider mb-1.5">
-                                Cost Code (ID)
-                            </label>
-                            <input
-                                id={field.name}
-                                name={field.name}
-                                value={field.state.value}
-                                onBlur={field.handleBlur}
-                                // If editing an existing item, treat it as read-only to prevent breaking relational lookups
-                                disabled={!!defaultValues?.generalCostId}
-                                onChange={(e) => field.handleChange(e.target.value.toUpperCase())}
-                                placeholder="e.g. SRCH-STD-01"
-                                className={`w-full h-[36px] rounded border bg-surface-container-lowest px-3 text-sm text-on-surface placeholder:text-outline transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none disabled:bg-surface-container/40 disabled:text-outline disabled:cursor-not-allowed ${
                                     field.state.meta.errors.length ? 'border-error focus:border-error focus:ring-error/20' : 'border-outline-variant'
                                 }`}
                             />
@@ -133,7 +100,7 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues }: G
                                     id={field.name}
                                     name={field.name}
                                     type="number"
-                                    step="0.01"
+                                    step="0.1"
                                     value={field.state.value}
                                     onBlur={field.handleBlur}
                                     onChange={(e) => {
@@ -158,18 +125,21 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues }: G
                     <button
                         type="button"
                         onClick={onClose}
-                        className="h-[36px] px-4 rounded border border-outline-variant text-sm font-semibold text-on-surface hover:bg-surface-container/10"
+                        className="h-[36px] px-4 rounded border border-outline-variant text-sm font-semibold text-on-surface hover:bg-surface-container/10 cursor-pointer"
                     >
                         Cancel
                     </button>
 
-                    <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-                        {([canSubmit, isSubmitting]) => (
+                    <form.Subscribe selector={(state) => [state.canSubmit]}>
+                        {([canSubmit]) => (
                             <button
                                 type="submit"
                                 disabled={!canSubmit || isSubmitting}
-                                className="h-[36px] px-4 rounded bg-primary text-sm font-semibold text-on-primary hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                className="h-[36px] px-4 rounded bg-primary text-sm font-semibold text-on-primary hover:bg-primary/90 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                             >
+                                {isSubmitting && (
+                                    <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-on-primary border-t-transparent" />
+                                )}
                                 {isSubmitting ? 'Saving...' : 'Save Cost Item'}
                             </button>
                         )}
