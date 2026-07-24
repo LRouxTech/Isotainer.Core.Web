@@ -1,22 +1,21 @@
-﻿import { useEffect } from 'react';
-import { useForm } from '@tanstack/react-form';
-import { Modal } from "../../ui/Modal.tsx";
-import type { GeneralCostItem } from "../../../model/finance/generalCost/generalCostListResponse.ts";
+﻿import type {CompanyItem} from "../../../model/tank/company/companyItem.ts";
+import {useForm} from "@tanstack/react-form";
+import {useEffect} from "react";
+import {Modal} from "../../ui/Modal.tsx";
 
-interface GeneralCostModalProps {
+interface CompanyModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (values: GeneralCostItem) => void;
-    defaultValues?: GeneralCostItem;
+    onSubmit: (values: CompanyItem) => void;
+    defaultValues?: CompanyItem;
     isSubmitting?: boolean;
 }
 
-export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues, isSubmitting = false }: GeneralCostModalProps) {
+export function CompanyModal({ isOpen, onClose, onSubmit, defaultValues, isSubmitting = false }: CompanyModalProps) {
     const form = useForm({
         defaultValues: {
-            generalCostId: defaultValues?.generalCostId ?? '',
+            companyId: defaultValues?.companyId ?? '',
             name: defaultValues?.name ?? '',
-            cost: defaultValues?.cost ?? 0,
         },
         onSubmit: async ({ value }) => {
             await onSubmit(value);
@@ -26,15 +25,14 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues, isS
     useEffect(() => {
         if (isOpen) {
             form.reset({
-                generalCostId: defaultValues?.generalCostId ?? '',
+                companyId: defaultValues?.companyId ?? '',
                 name: defaultValues?.name ?? '',
-                cost: defaultValues?.cost ?? 0,
             });
         }
     }, [defaultValues, isOpen, form]);
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title="Set General Cost Item" maxWidthClass="max-w-[440px]">
+        <Modal isOpen={isOpen} onClose={onClose} title="Create or Update Company" maxWidthClass="max-w-[440px]">
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -60,7 +58,7 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues, isS
                                 name={field.name}
                                 value={field.state.value}
                                 onBlur={field.handleBlur}
-                                disabled={true}
+                                onChange={(e) => field.handleChange(e.target.value)}
                                 className={`w-full h-[36px] rounded border bg-surface-container-lowest px-3 text-sm text-on-surface placeholder:text-outline transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none ${
                                     field.state.meta.errors.length ? 'border-error focus:border-error focus:ring-error/20' : 'border-outline-variant'
                                 }`}
@@ -72,53 +70,6 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues, isS
                     )}
                 </form.Field>
 
-                {/* Cost/Price Input */}
-                <form.Field
-                    name="cost"
-                    validators={{
-                        onChange: ({ value }) => {
-                            if (value === undefined || value === null || value === 0) return 'Price is required';
-                            const numValue = Number(value);
-                            if (isNaN(numValue)) return 'Price must be a number';
-                            if (numValue < 0) return 'Price cannot be negative';
-                            return undefined;
-                        },
-                    }}
-                >
-                    {(field) => (
-                        <div>
-                            <label htmlFor={field.name} className="block text-xs font-bold text-on-surface uppercase tracking-wider mb-1.5">
-                                Price (USD)
-                            </label>
-                            <div className="relative flex items-center h-[36px]">
-                                <span className="absolute left-3 text-sm font-bold text-outline select-none">
-                                    $
-                                </span>
-                                <input
-                                    id={field.name}
-                                    name={field.name}
-                                    type="number"
-                                    step="0.1"
-                                    value={field.state.value}
-                                    onBlur={field.handleBlur}
-                                    onChange={(e) => {
-                                        const raw = e.target.value;
-                                        field.handleChange(raw === '' ? 0 : parseFloat(raw));
-                                    }}
-                                    placeholder="0.00"
-                                    className={`w-full h-full rounded border bg-surface-container-lowest pl-7 pr-3 text-sm text-on-surface placeholder:text-outline transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none ${
-                                        field.state.meta.errors.length ? 'border-error focus:border-error focus:ring-error/20' : 'border-outline-variant'
-                                    }`}
-                                />
-                            </div>
-                            {field.state.meta.errors.length > 0 && (
-                                <p className="mt-1 text-xs font-medium text-error">{field.state.meta.errors.join(', ')}</p>
-                            )}
-                        </div>
-                    )}
-                </form.Field>
-
-                {/* Action Controls Footer */}
                 <div className="mt-6 flex justify-end gap-3 border-t border-outline-variant/60 pt-4">
                     <button
                         type="button"
@@ -138,7 +89,7 @@ export function GeneralCostModal({ isOpen, onClose, onSubmit, defaultValues, isS
                                 {isSubmitting && (
                                     <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-on-primary border-t-transparent" />
                                 )}
-                                {isSubmitting ? 'Saving...' : 'Save Cost Item'}
+                                {isSubmitting ? 'Saving...' : 'Save Company'}
                             </button>
                         )}
                     </form.Subscribe>

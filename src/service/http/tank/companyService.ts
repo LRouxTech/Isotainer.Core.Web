@@ -18,12 +18,12 @@ export const companyService = {
         return response.data;
     },
 
-    updateCompany: async (request: UpdateCompanyRequest, id : number): Promise<CompanyResponse> => {
+    updateCompany: async (request: UpdateCompanyRequest, id : string): Promise<CompanyResponse> => {
         const response = await axiosInstance.put<CompanyResponse>(`${API_BASE_URL}/${id}`, request);
         return response.data;
     },
 
-    deleteCompany: async (id : number): Promise<boolean> => {
+    deleteCompany: async (id : string): Promise<boolean> => {
         const response = await axiosInstance.delete<boolean>(`${API_BASE_URL}/${id}`);
         return response.data;
     },
