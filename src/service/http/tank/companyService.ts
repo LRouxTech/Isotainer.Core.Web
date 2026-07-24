@@ -1,15 +1,21 @@
 import axiosInstance from "../../../api/axiosInstance.ts";
 import type {CardInformation} from "../../../model/general/cardInformation.ts";
-import type {CompanyListResponse} from "../../../model/tank/company/companyListResponse.ts";
 import type {CreateCompanyRequest} from "../../../model/tank/company/createCompanyRequest.ts";
 import type {CompanyResponse} from "../../../model/tank/company/companyResponse.ts";
 import type {UpdateCompanyRequest} from "../../../model/tank/company/updateCompanyRequest.ts";
+import type {PagedList, PagedRequest} from "../../../model/general/pagedList.ts";
+import type {CompanyItem} from "../../../model/tank/company/companyItem.ts";
 
 const API_BASE_URL = '/api/tank/company';
 
 export const companyService = {
-    getCompaniesList: async (): Promise<CompanyListResponse> => {
-        const response = await axiosInstance.get<CompanyListResponse>(`${API_BASE_URL}/`);
+    getCompaniesList: async (pagination : PagedRequest): Promise<PagedList<CompanyItem>> => {
+        const response = await axiosInstance.get<PagedList<CompanyItem>>(`${API_BASE_URL}/`, {
+            params: {
+                pageIndex: pagination.pageIndex,
+                pageSize: pagination.pageSize,
+            },
+        });
         return response.data;
     },
 

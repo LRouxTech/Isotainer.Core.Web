@@ -1,50 +1,49 @@
-﻿import { useState } from 'react';
-import {
+﻿import {
     useReactTable,
     getCoreRowModel,
-    getPaginationRowModel,
-    flexRender, type ColumnDef
+    flexRender,
+    type ColumnDef,
+    type PaginationState,
 } from '@tanstack/react-table';
 
-interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[];
+interface DataTableProps<TData> {
+    columns: ColumnDef<TData>[];
     data: TData[];
-    pageSize?: number;
+    pageCount?: number;
+    totalCount?: number;
+    pagination?: PaginationState;
+    onPaginationChange?: (pagination: PaginationState | ((old: PaginationState) => PaginationState)) => void;
+    isLoading?: boolean;
 }
 
-export function DataTable<TData, TValue>({
-                                             columns,
-                                             data,
-                                             pageSize = 5,
-                                         }: DataTableProps<TData, TValue>) {
-    const [pagination, setPagination] = useState({
-        pageIndex: 0,
-        pageSize: pageSize,
-    });
-
+export function DataTable<TData>({
+                                     columns,
+                                     data,
+                                     pageCount = 0,
+                                     totalCount = 0,
+                                     pagination = { pageIndex: 0, pageSize: 10 }, // Default fallback
+                                     onPaginationChange,
+                                     isLoading,
+                                 }: DataTableProps<TData>) {
     const table = useReactTable({
         data,
         columns,
+        pageCount,
         state: { pagination },
-        onPaginationChange: setPagination,
+        onPaginationChange,
+        manualPagination: true,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
     });
 
     return (
-        <div className="w-full bg-surface-container-lowest rounded-lg border border-outline-variant/60 overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-left">
-
-                    {/* Mockup matching Dark Industrial Header Header */}
-                    <thead className="bg-[#1A1A1A] text-white select-none">
+        <div className="space-y-4">
+            <div className="rounded-lg border border-outline-variant bg-surface-container-lowest overflow-hidden">
+                <table className="w-full text-left text-sm text-on-surface">
+                    <thead className="border-b border-outline-variant bg-surface-container/30 text-xs uppercase text-on-surface-variant">
                     {table.getHeaderGroups().map((headerGroup) => (
                         <tr key={headerGroup.id}>
                             {headerGroup.headers.map((header) => (
-                                <th
-                                    key={header.id}
-                                    className="h-11 px-6 text-[11px] font-bold tracking-wider uppercase align-middle text-on-primary-container/80"
-                                >
+                                <th key={header.id} className="px-4 py-3 font-bold">
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(header.column.columnDef.header, header.getContext())}
@@ -53,73 +52,80 @@ export function DataTable<TData, TValue>({
                         </tr>
                     ))}
                     </thead>
-
-                    {/* Table Body rows */}
-                    <tbody className="divide-y divide-outline-variant/30">
-                    {table.getRowModel().rows.length > 0 ? (
+                    <tbody className="divide-y divide-outline-variant/60">
+                    {isLoading ? (
+                        <tr>
+                            <td colSpan={columns.length} className="h-24 text-center text-outline">
+                                Loading...
+                            </td>
+                        </tr>
+                    ) : table.getRowModel().rows.length === 0 ? (
+                        <tr>
+                            <td colSpan={columns.length} className="h-24 text-center text-outline">
+                                No records found.
+                            </td>
+                        </tr>
+                    ) : (
                         table.getRowModel().rows.map((row) => (
-                            <tr
-                                key={row.id}
-                                className="hover:bg-surface-container/5 transition-colors group h-14"
-                            >
+                            <tr key={row.id} className="hover:bg-surface-container/20">
                                 {row.getVisibleCells().map((cell) => (
-                                    <td key={cell.id} className="px-6 text-sm text-on-surface font-semibold align-middle">
+                                    <td key={cell.id} className="px-4 py-3">
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>
                                 ))}
                             </tr>
                         ))
-                    ) : (
-                        <tr>
-                            <td colSpan={columns.length} className="h-24 text-center text-sm text-outline font-medium">
-                                No records found.
-                            </td>
-                        </tr>
                     )}
                     </tbody>
                 </table>
             </div>
 
             {/* Pagination Controls Footer */}
-            <div className="flex h-14 items-center justify-between border-t border-outline-variant/60 px-6 bg-surface-container-lowest text-sm text-on-surface-variant font-medium select-none">
+            <div className="flex items-center justify-between px-2 text-xs text-on-surface-variant">
                 <div>
-                    Showing <span className="font-bold text-on-surface">{table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}</span> to{' '}
-                    <span className="font-bold text-on-surface">
-            {Math.min(
-                (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-                data.length
-            )}
-          </span>{' '}
-                    of <span className="font-bold text-on-surface">{data.length}</span> entries
+                    Showing {data.length} of {totalCount} results
                 </div>
+                <div className="flex items-center gap-6">
+                    {/* Rows per page selector */}
+                    <div className="flex items-center gap-2">
+                        <span>Rows per page:</span>
+                        <select
+                            value={table.getState().pagination.pageSize}
+                            onChange={(e) => table.setPageSize(Number(e.target.value))}
+                            className="h-8 rounded border border-outline-variant bg-surface-container-lowest px-2 font-medium"
+                        >
+                            {[5, 10, 20, 50].map((pageSize) => (
+                                <option key={pageSize} value={pageSize}>
+                                    {pageSize}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                <div className="flex items-center gap-2">
-                    {/* Previous Page */}
-                    <button
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                        className="flex h-8 w-8 items-center justify-center rounded border border-outline-variant hover:bg-surface-container/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    >
-                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                            <polyline points="15 18 9 12 15 6" />
-                        </svg>
-                    </button>
+                    {/* Page Numbers */}
+                    <div>
+                        Page <strong>{table.getState().pagination.pageIndex + 1}</strong> of <strong>{pageCount || 1}</strong>
+                    </div>
 
-                    {/* Page Indicator */}
-                    <span className="text-xs font-bold text-on-surface">
-            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-          </span>
-
-                    {/* Next Page */}
-                    <button
-                        onClick={() => table.nextPage()}
-                        disabled={!table.getCanNextPage()}
-                        className="flex h-8 w-8 items-center justify-center rounded border border-outline-variant hover:bg-surface-container/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    >
-                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                            <polyline points="9 18 15 12 9 6" />
-                        </svg>
-                    </button>
+                    {/* Next / Previous Buttons */}
+                    <div className="flex items-center gap-1">
+                        <button
+                            type="button"
+                            onClick={() => table.previousPage()}
+                            disabled={!table.getCanPreviousPage()}
+                            className="h-8 px-2.5 rounded border border-outline-variant hover:bg-surface-container/20 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                        >
+                            Previous
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => table.nextPage()}
+                            disabled={!table.getCanNextPage()}
+                            className="h-8 px-2.5 rounded border border-outline-variant hover:bg-surface-container/20 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,10 +1,11 @@
 ﻿import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import type {CardInformation} from "../../../model/general/cardInformation.ts";
 import {companyService} from "../../http/tank/companyService.ts";
-import type {CompanyListResponse} from "../../../model/tank/company/companyListResponse.ts";
 import type {UpdateCompanyRequest} from "../../../model/tank/company/updateCompanyRequest.ts";
 import type {CompanyResponse} from "../../../model/tank/company/companyResponse.ts";
 import type {CreateCompanyRequest} from "../../../model/tank/company/createCompanyRequest.ts";
+import type {PagedList, PagedRequest} from "../../../model/general/pagedList.ts";
+import type {CompanyItem} from "../../../model/tank/company/companyItem.ts";
 
 export function useCompanyStats() {
     return useQuery<CardInformation>({
@@ -15,10 +16,14 @@ export function useCompanyStats() {
 }
 
 
-export function useCompanyRecords() {
-    return useQuery<CompanyListResponse>({
-        queryKey: ['company', 'records'],
-        queryFn: companyService.getCompaniesList
+export function useCompanyRecords(pagination : PagedRequest) {
+    const pageIndex = (pagination?.pageIndex ?? 0) + 1;
+    const pageSize = pagination?.pageSize ?? 10;
+
+    return useQuery<PagedList<CompanyItem>>({
+        queryKey: ['company', 'records', pageIndex, pageSize],
+        queryFn: () => companyService.getCompaniesList({ pageIndex, pageSize }),
+        placeholderData: previousData => previousData
     });
 }
 
