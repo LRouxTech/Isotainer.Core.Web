@@ -1,4 +1,4 @@
 ﻿export interface UpdateIsotainerTankRequest {
-    tankNumber: string;
+    tankNumber : string;
     companyId : string; // guid
 }
