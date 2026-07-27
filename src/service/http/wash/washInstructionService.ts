@@ -8,11 +8,12 @@ import type {UpdateWashInstructionRequest} from "../../../model/wash/washInstruc
 const API_BASE_URL = '/api/wash/instruction';
 
 export const washInstructionService = {
-    getWashInstructionList: async (pagination : PagedRequest): Promise<PagedList<WashInstructionItem>> => {
+    getWashInstructionList: async (pagination : PagedRequest, isFinished : boolean): Promise<PagedList<WashInstructionItem>> => {
         const response = await axiosInstance.get<PagedList<WashInstructionItem>>(`${API_BASE_URL}/`, {
             params: {
                 pageIndex: pagination.pageIndex,
                 pageSize: pagination.pageSize,
+                isFinished: isFinished,
             },
         });
         return response.data;

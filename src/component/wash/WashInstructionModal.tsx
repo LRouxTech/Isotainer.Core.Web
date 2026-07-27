@@ -1,5 +1,5 @@
 ﻿import {useForm} from "@tanstack/react-form";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {Modal} from "../ui/Modal.tsx";
 import type {WashInstructionItem} from "../../model/wash/washInstruction/washInstructionsListResponse.ts";
 import {useWashTypeRecords} from "../../service/hooks/wash/useWashType.ts";
@@ -16,10 +16,16 @@ interface WashInstructionModalProps {
 export function WashInstructionModal({ isOpen, onClose, onSubmit, defaultValues, isSubmitting = false }: WashInstructionModalProps) {
     const { data: washTypeData, isLoading: isLoadingWashTypes } = useWashTypeRecords({ pageIndex: 0, pageSize: 100 });
     const { data: tankData, isLoading: isLoadingTanks } = useIsotainerTankRecords({ pageIndex: 0, pageSize: 100 });
-
+    const [initialInstructedOn] = useState(() => {
+        if (defaultValues?.instructedOn) {
+            return defaultValues.instructedOn;
+        }
+        // Buffer 5 minutes ahead to pass backend (> DateTime.UtcNow) validation cleanly
+        return new Date(Date.now() + 5 * 60 * 1000).toISOString();
+    });
     const form = useForm({
         defaultValues: {
-            instructedOn: defaultValues?.instructedOn ?? '',
+            instructedOn: defaultValues?.instructedOn ?? initialInstructedOn,
             tankNumber: defaultValues?.tankNumber ?? '',
             wash: defaultValues?.wash ?? '',
             isotainerTankId: defaultValues?.isotainerTankId ?? '',
@@ -34,7 +40,7 @@ export function WashInstructionModal({ isOpen, onClose, onSubmit, defaultValues,
     useEffect(() => {
         if (isOpen) {
             form.reset({
-                instructedOn: defaultValues?.instructedOn ?? '',
+                instructedOn: defaultValues?.instructedOn ?? initialInstructedOn,
                 tankNumber: defaultValues?.tankNumber ?? '',
                 wash: defaultValues?.wash ?? '',
                 isotainerTankId: defaultValues?.isotainerTankId ?? '',

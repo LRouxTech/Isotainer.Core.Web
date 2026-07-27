@@ -6,13 +6,13 @@ import type {CreateWashInstructionRequest} from "../../../model/wash/washInstruc
 import type {WashInstructionResponse} from "../../../model/wash/washInstruction/washInstructionResponse.ts";
 import type {UpdateWashInstructionRequest} from "../../../model/wash/washInstruction/updateWashInstructionRequest.ts";
 
-export function useWashInstructionRecords(pagination : PagedRequest) {
+export function useWashInstructionRecords(pagination : PagedRequest, isFinished : boolean) {
     const pageIndex = (pagination?.pageIndex ?? 0) + 1;
     const pageSize = pagination?.pageSize ?? 10;
 
     return useQuery<PagedList<WashInstructionItem>>({
         queryKey: ['washInstruction', 'records', pageIndex, pageSize],
-        queryFn: () => washInstructionService.getWashInstructionList({ pageIndex, pageSize }),
+        queryFn: () => washInstructionService.getWashInstructionList({ pageIndex, pageSize }, isFinished),
         placeholderData: previousData => previousData
     });
 }

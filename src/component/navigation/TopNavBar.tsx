@@ -34,13 +34,6 @@ export function TopNavBar() {
                 >
                     Master Data
                 </Link>
-
-                <span className="text-sm font-medium text-on-surface-variant/40 cursor-not-allowed select-none">
-                  Reports
-                </span>
-                        <span className="text-sm font-medium text-on-surface-variant/40 cursor-not-allowed select-none">
-                  Inventory
-                </span>
             </nav>
 
             <div className="flex items-center gap-4">
