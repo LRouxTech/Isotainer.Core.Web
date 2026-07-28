@@ -34,6 +34,15 @@ export function TopNavBar() {
                 >
                     Master Data
                 </Link>
+
+                <Link
+                    to="/users"
+                    activeProps={{ className: 'text-primary font-bold border-b-2 border-primary pb-1' }}
+                    inactiveProps={{ className: 'text-on-surface-variant hover:text-on-surface font-medium transition-colors' }}
+                    className="text-sm tracking-wide"
+                >
+                    Users
+                </Link>
             </nav>
 
             <div className="flex items-center gap-4">
