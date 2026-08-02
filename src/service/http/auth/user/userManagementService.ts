@@ -7,16 +7,16 @@ import type {UserDetailRequest} from "../../../../model/auth/user/request/userDe
 import type {ArchiveUserRequest} from "../../../../model/auth/user/request/archiveUserRequest.ts";
 import type {PagedList, PagedRequest} from "../../../../model/general/pagedList.ts";
 
-const API_BASE_URL = '/api/users';
+const API_BASE_URL = '/api/user';
 
 export const userManagementService = {
     createUser: async (request: CreateUserRequest): Promise<UserDetailResponse> => {
-        const response = await axiosInstance.post<UserDetailResponse>(`${API_BASE_URL}/`, request);
+        const response = await axiosInstance.post<UserDetailResponse>(`${API_BASE_URL}/create`, request);
         return response.data;
     },
 
-    updateUser: async (request: UpdateUserRequest, userId : string): Promise<UserDetailResponse> => {
-        const response = await axiosInstance.put<UserDetailResponse>(`${API_BASE_URL}/${userId}`, request);
+    updateUser: async (request: UpdateUserRequest): Promise<UserDetailResponse> => {
+        const response = await axiosInstance.put<UserDetailResponse>(`${API_BASE_URL}/update`, request);
         return response.data;
     },
 
@@ -31,7 +31,11 @@ export const userManagementService = {
     },
 
     getUser: async (request: UserDetailRequest): Promise<UserDetailResponse> => {
-        const response = await axiosInstance.get<UserDetailResponse>(`${API_BASE_URL}/${request.userId}`);
+        const response = await axiosInstance.get<UserDetailResponse>(`${API_BASE_URL}/${request.userId}`, {
+            params: {
+                ...request
+            }
+        });
         return response.data;
     },
 

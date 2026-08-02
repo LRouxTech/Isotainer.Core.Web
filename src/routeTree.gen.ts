@@ -17,6 +17,7 @@ import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated.
 import { Route as AuthenticatedMasterDataRouteImport } from './routes/_authenticated.master-data'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated.home'
 import { Route as AuthenticatedFinancialsRouteImport } from './routes/_authenticated.financials'
+import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated.users.index'
 import { Route as AuthenticatedMasterDataIndexRouteImport } from './routes/_authenticated.master-data.index'
 import { Route as AuthenticatedUsersNewRouteImport } from './routes/_authenticated.users.new'
 import { Route as AuthenticatedMasterDataWashTypeRouteImport } from './routes/_authenticated.master-data.wash-type'
@@ -62,6 +63,11 @@ const AuthenticatedFinancialsRoute = AuthenticatedFinancialsRouteImport.update({
   id: '/financials',
   path: '/financials',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedUsersRoute,
 } as any)
 const AuthenticatedMasterDataIndexRoute =
   AuthenticatedMasterDataIndexRouteImport.update({
@@ -112,13 +118,13 @@ export interface FileRoutesByFullPath {
   '/master-data/wash-type': typeof AuthenticatedMasterDataWashTypeRoute
   '/users/new': typeof AuthenticatedUsersNewRoute
   '/master-data/': typeof AuthenticatedMasterDataIndexRoute
+  '/users/': typeof AuthenticatedUsersIndexRoute
   '/users/edit/$userId': typeof AuthenticatedUsersEditUserIdRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/financials': typeof AuthenticatedFinancialsRoute
   '/home': typeof AuthenticatedHomeRoute
-  '/users': typeof AuthenticatedUsersRouteWithChildren
   '/washing': typeof AuthenticatedWashingRoute
   '/': typeof AuthenticatedIndexRoute
   '/master-data/company': typeof AuthenticatedMasterDataCompanyRoute
@@ -126,6 +132,7 @@ export interface FileRoutesByTo {
   '/master-data/wash-type': typeof AuthenticatedMasterDataWashTypeRoute
   '/users/new': typeof AuthenticatedUsersNewRoute
   '/master-data': typeof AuthenticatedMasterDataIndexRoute
+  '/users': typeof AuthenticatedUsersIndexRoute
   '/users/edit/$userId': typeof AuthenticatedUsersEditUserIdRoute
 }
 export interface FileRoutesById {
@@ -143,6 +150,7 @@ export interface FileRoutesById {
   '/_authenticated/master-data/wash-type': typeof AuthenticatedMasterDataWashTypeRoute
   '/_authenticated/users/new': typeof AuthenticatedUsersNewRoute
   '/_authenticated/master-data/': typeof AuthenticatedMasterDataIndexRoute
+  '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
   '/_authenticated/users/edit/$userId': typeof AuthenticatedUsersEditUserIdRoute
 }
 export interface FileRouteTypes {
@@ -160,13 +168,13 @@ export interface FileRouteTypes {
     | '/master-data/wash-type'
     | '/users/new'
     | '/master-data/'
+    | '/users/'
     | '/users/edit/$userId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/financials'
     | '/home'
-    | '/users'
     | '/washing'
     | '/'
     | '/master-data/company'
@@ -174,6 +182,7 @@ export interface FileRouteTypes {
     | '/master-data/wash-type'
     | '/users/new'
     | '/master-data'
+    | '/users'
     | '/users/edit/$userId'
   id:
     | '__root__'
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/_authenticated/master-data/wash-type'
     | '/_authenticated/users/new'
     | '/_authenticated/master-data/'
+    | '/_authenticated/users/'
     | '/_authenticated/users/edit/$userId'
   fileRoutesById: FileRoutesById
 }
@@ -255,6 +265,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/financials'
       preLoaderRoute: typeof AuthenticatedFinancialsRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/users/': {
+      id: '/_authenticated/users/'
+      path: '/'
+      fullPath: '/users/'
+      preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
+      parentRoute: typeof AuthenticatedUsersRoute
     }
     '/_authenticated/master-data/': {
       id: '/_authenticated/master-data/'
@@ -324,11 +341,13 @@ const AuthenticatedMasterDataRouteWithChildren =
 
 interface AuthenticatedUsersRouteChildren {
   AuthenticatedUsersNewRoute: typeof AuthenticatedUsersNewRoute
+  AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
   AuthenticatedUsersEditUserIdRoute: typeof AuthenticatedUsersEditUserIdRoute
 }
 
 const AuthenticatedUsersRouteChildren: AuthenticatedUsersRouteChildren = {
   AuthenticatedUsersNewRoute: AuthenticatedUsersNewRoute,
+  AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
   AuthenticatedUsersEditUserIdRoute: AuthenticatedUsersEditUserIdRoute,
 }
 

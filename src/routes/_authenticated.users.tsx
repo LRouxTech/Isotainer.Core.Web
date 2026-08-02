@@ -1,6 +1,5 @@
-﻿import { createFileRoute } from '@tanstack/react-router';
-import {UsersPageComponent} from "../component/users/UsersPageComponent.tsx";
+﻿import {createFileRoute, Outlet} from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_authenticated/users')({
-    component: UsersPageComponent,
+    component: () => <Outlet />,
 });

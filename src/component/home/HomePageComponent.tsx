@@ -2,10 +2,16 @@
 import {DataTable} from "../ui/DataTable.tsx";
 import type {IsotainerTankItem} from "../../model/tank/isotainerTank/isotainerTankListResponse.ts";
 import {useState} from "react";
+import {
+    Package,
+    Droplets,
+    AlertTriangle,
+    Clock
+} from "lucide-react";
 
 import {
     useCreateIsotainerTank, useDeleteIsotainerTank,
-    useIsotainerTankRecords, useUnloadIsotainerTank,
+    useIsotainerTankRecords, useIsotainerTankStats, useUnloadIsotainerTank,
     useUpdateIsotainerTank
 } from "../../service/hooks/tank/useIsotainerTank.ts";
 import {RowActions} from "../ui/RowActions.tsx";
@@ -42,6 +48,7 @@ export function HomePageComponent() {
     const deleteMutation = useDeleteIsotainerTank();
     const unloadMutation = useUnloadIsotainerTank();
     const createWashInstructionMutation = useCreateWashInstruction();
+    const { data: tankStatsMutation, isLoading: isStatsLoading} = useIsotainerTankStats();
 
     const handleOpenDelete = (item: IsotainerTankItem) => {
         setItemToDelete(item);
@@ -237,6 +244,76 @@ export function HomePageComponent() {
                     </svg>
                     Add Tank
                 </button>
+            </div>
+
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-[#F8F9FE]">
+                <div className="bg-white rounded-md border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+                    <div className="flex justify-between items-center">
+                          <span className="text-xs font-bold tracking-wider text-slate-600 uppercase">
+                            Active Tanks
+                          </span>
+                        <Package className="w-5 h-5 text-[#1E295B]" />
+                    </div>
+                    {isStatsLoading ? (
+                            <div className="h-8 w-24 bg-slate-200 rounded my-2 animate-pulse" />
+                        ) :
+                    <div className="text-3xl font-extrabold text-slate-900 my-2">
+                        {tankStatsMutation?.totalActiveTanks.toLocaleString() ?? "0"}
+                    </div>
+                    }
+                </div>
+
+                {/* 2. WASH IN-PROGRESS */}
+                <div className="bg-white rounded-md border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-bold tracking-wider text-slate-600 uppercase">
+                        Wash In-Progress
+                      </span>
+                        <Droplets className="w-5 h-5 text-blue-500" />
+                    </div>
+                    {isStatsLoading ? (
+                            <div className="h-8 w-24 bg-slate-200 rounded my-2 animate-pulse" />
+                        ) :
+                    <div className="text-3xl font-extrabold text-slate-900 my-2">
+                        {tankStatsMutation?.totalWashesBooked ?? "0"}
+                    </div>
+                    }
+                </div>
+
+                {/* 3. DIRTY INVENTORY */}
+                <div className="bg-white rounded-md border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+                    <div className="flex justify-between items-center">
+                          <span className="text-xs font-bold tracking-wider text-slate-600 uppercase">
+                            Dirty Inventory
+                          </span>
+                        <AlertTriangle className="w-5 h-5 text-amber-500" />
+                    </div>
+                    {isStatsLoading ? (
+                            <div className="h-8 w-24 bg-slate-200 rounded my-2 animate-pulse" />
+                        ) :
+                    <div className="text-3xl font-extrabold text-slate-900 my-2">
+                        {tankStatsMutation?.totalNewInventory ?? "0"}
+                    </div>
+                    }
+                </div>
+
+                {/* 4. AVERAGE TURNAROUND */}
+                <div className="bg-white rounded-md border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+                    <div className="flex justify-between items-center">
+                          <span className="text-xs font-bold tracking-wider text-slate-600 uppercase">
+                            Average Turnaround
+                          </span>
+                        <Clock className="w-5 h-5 text-slate-700" />
+                    </div>
+                    {isStatsLoading ? (
+                            <div className="h-8 w-24 bg-slate-200 rounded my-2 animate-pulse" />
+                        ) :
+                    <div className="text-3xl font-extrabold text-slate-900 my-2">
+                        {tankStatsMutation?.averageTurnaroundTime ?? "0 Days"}
+                    </div>
+                    }
+                </div>
             </div>
 
             <hr className="border-outline-variant/60"/>

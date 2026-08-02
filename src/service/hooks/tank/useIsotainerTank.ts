@@ -6,6 +6,7 @@ import type {IsotainerTankResponse} from "../../../model/tank/isotainerTank/isot
 import type {CreateIsotainerTankRequest} from "../../../model/tank/isotainerTank/createIsotainerTankRequest.ts";
 import type {UpdateIsotainerTankRequest} from "../../../model/tank/isotainerTank/updateIsotainerTankRequest.ts";
 import type {ChangeWashStatusRequest} from "../../../model/tank/isotainerTank/changeWashStatusRequest.ts";
+import type {TankStatisticInformation} from "../../../model/tank/isotainerTank/tankStatisticInformation.ts";
 
 export function useIsotainerTankRecords(pagination : PagedRequest) {
     const pageIndex = (pagination?.pageIndex ?? 0) + 1;
@@ -81,5 +82,13 @@ export function useDeleteIsotainerTank() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['isotainerTank', 'records'] });
         },
+    });
+}
+
+export function useIsotainerTankStats() {
+    return useQuery<TankStatisticInformation>({
+        queryKey: ['isotainerTank', 'stats' ],
+        queryFn: () => isotainerTankService.getIsotainerTankStats(),
+        placeholderData: previousData => previousData
     });
 }

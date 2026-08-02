@@ -1,5 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import type {ListUser, UserListResponse} from "../../../model/auth/user/response/userListResponse.ts";
+import type {ListUser} from "../../../model/auth/user/response/userListResponse.ts";
 import {userManagementService} from "../../http/auth/user/userManagementService.ts";
 import type {UserDetailRequest} from "../../../model/auth/user/request/userDetailRequest.ts";
 import type {UserDetailResponse} from "../../../model/auth/user/response/userDetailResponse.ts";
@@ -49,16 +49,11 @@ export function useCreateUser() {
     });
 }
 
-interface UpdateIsotainerTankParams {
-    id: string;
-    request: UpdateUserRequest;
-}
-
 export function useUpdateUser() {
     const queryClient = useQueryClient();
 
-    return useMutation<UserDetailResponse, Error, UpdateIsotainerTankParams>({
-        mutationFn: ({ id, request }) => userManagementService.updateUser(request, id),
+    return useMutation<UserDetailResponse, Error, UpdateUserRequest>({
+        mutationFn: ( request ) => userManagementService.updateUser(request),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['user', 'records'] });
         },

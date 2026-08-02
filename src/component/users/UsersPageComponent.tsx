@@ -67,16 +67,6 @@ export function UsersPageComponent() {
 
     const columns: ColumnDef<ListUser>[] = [
         {
-            accessorKey: 'name',
-            header: 'NAME',
-            cell: ({ getValue }) => <span className="font-bold text-on-surface">{getValue<string>()}</span>,
-        },
-        {
-            accessorKey: 'surname',
-            header: 'SURNAME',
-            cell: ({ getValue }) => <span className="text-on-surface">{getValue<string>()}</span>,
-        },
-        {
             accessorKey: 'username',
             header: 'USERNAME',
             cell: ({ getValue }) => <span className="font-mono text-xs text-on-surface-variant">{getValue<string>()}</span>,
@@ -87,14 +77,16 @@ export function UsersPageComponent() {
             cell: ({ getValue }) => <span className="font-mono text-xs text-on-surface-variant">{getValue<string>()}</span>,
         },
         {
-            accessorKey: 'role',
+            accessorKey: 'roles',
             header: 'ROLE',
             cell: ({ getValue }) => {
-                const role = getValue<string>() ?? '';
+                const roles = getValue<string[]>() ?? [];
+                const role = roles[0] ?? '';
+
                 return (
                     <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${getRoleBadgeClass(role)}`}>
-                        {role}
-                    </span>
+                {role}
+            </span>
                 );
             },
         },
@@ -112,7 +104,6 @@ export function UsersPageComponent() {
 
     return (
         <div className="space-y-6">
-            {/* Header & Main Action */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-on-surface">User Management</h1>
@@ -136,93 +127,7 @@ export function UsersPageComponent() {
                 </button>
             </div>
 
-            {/* KPI Stat Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Total Users */}
-                <div className="p-4 rounded-xl border border-outline-variant/60 bg-surface-container-lowest flex items-center gap-4">
-                    <div className="p-3 rounded-lg bg-primary/10 text-primary">
-                        <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                        </svg>
-                    </div>
-                    <div>
-                        <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">Total Users</span>
-                        <span className="text-2xl font-extrabold text-on-surface">1,248</span>
-                    </div>
-                </div>
-
-                {/* Admins */}
-                <div className="p-4 rounded-xl border border-outline-variant/60 bg-surface-container-lowest flex items-center gap-4">
-                    <div className="p-3 rounded-lg bg-indigo-500/10 text-indigo-600">
-                        <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            <polyline points="9 12 11 14 15 10" />
-                        </svg>
-                    </div>
-                    <div>
-                        <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">Admins</span>
-                        <span className="text-2xl font-extrabold text-on-surface">24</span>
-                    </div>
-                </div>
-
-                {/* Active Now */}
-                <div className="p-4 rounded-xl border border-outline-variant/60 bg-surface-container-lowest flex items-center gap-4">
-                    <div className="p-3 rounded-lg bg-emerald-500/10 text-emerald-600">
-                        <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                        </svg>
-                    </div>
-                    <div>
-                        <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">Active Now</span>
-                        <span className="text-2xl font-extrabold text-on-surface">156</span>
-                    </div>
-                </div>
-
-                {/* Disabled */}
-                <div className="p-4 rounded-xl border border-outline-variant/60 bg-surface-container-lowest flex items-center gap-4">
-                    <div className="p-3 rounded-lg bg-error/10 text-error">
-                        <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                        </svg>
-                    </div>
-                    <div>
-                        <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">Disabled</span>
-                        <span className="text-2xl font-extrabold text-on-surface">8</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Filter & Search Bar */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                    <button
-                        type="button"
-                        className="inline-flex items-center gap-2 h-9 px-4 rounded border border-outline-variant bg-surface-container-lowest text-xs font-semibold text-on-surface hover:bg-surface-container/20 cursor-pointer"
-                    >
-                        <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-                        </svg>
-                        Filter
-                    </button>
-
-                    <button
-                        type="button"
-                        className="inline-flex items-center gap-2 h-9 px-4 rounded border border-outline-variant bg-surface-container-lowest text-xs font-semibold text-on-surface hover:bg-surface-container/20 cursor-pointer"
-                    >
-                        <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                            <polyline points="7 10 12 15 17 10" />
-                            <line x1="12" y1="15" x2="12" y2="3" />
-                        </svg>
-                        Export
-                    </button>
-                </div>
-
                 <div className="relative w-full sm:w-80">
                     <svg className="absolute left-3 top-2.5 text-outline" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <circle cx="11" cy="11" r="8" />
@@ -230,7 +135,7 @@ export function UsersPageComponent() {
                     </svg>
                     <input
                         type="text"
-                        placeholder="Search by name, email, or role..."
+                        placeholder="Search by name or email"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full h-9 pl-9 pr-3 rounded border border-outline-variant bg-surface-container-lowest text-xs text-on-surface placeholder:text-outline focus:border-primary focus:outline-none"

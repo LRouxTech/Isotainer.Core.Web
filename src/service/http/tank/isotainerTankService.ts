@@ -5,6 +5,7 @@ import type {IsotainerTankResponse} from "../../../model/tank/isotainerTank/isot
 import type {CreateIsotainerTankRequest} from "../../../model/tank/isotainerTank/createIsotainerTankRequest.ts";
 import type {UpdateIsotainerTankRequest} from "../../../model/tank/isotainerTank/updateIsotainerTankRequest.ts";
 import type {ChangeWashStatusRequest} from "../../../model/tank/isotainerTank/changeWashStatusRequest.ts";
+import type {TankStatisticInformation} from "../../../model/tank/isotainerTank/tankStatisticInformation.ts";
 
 const API_BASE_URL = '/api/tank/isotainer';
 
@@ -41,6 +42,11 @@ export const isotainerTankService = {
 
     deleteIsotainerTank: async (id : string): Promise<boolean> => {
         const response = await axiosInstance.delete<boolean>(`${API_BASE_URL}/${id}`);
+        return response.data;
+    },
+
+    getIsotainerTankStats: async (): Promise<TankStatisticInformation> => {
+        const response = await axiosInstance.get<TankStatisticInformation>(`${API_BASE_URL}/stats`);
         return response.data;
     },
 }
