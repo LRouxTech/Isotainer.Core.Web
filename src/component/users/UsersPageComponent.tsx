@@ -12,13 +12,17 @@ import type { ListUser } from "../../model/auth/user/response/userListResponse.t
 
 export function UsersPageComponent() {
     const navigate = useNavigate();
-    const [searchQuery, setSearchQuery] = useState('');
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+    const [search, setSearch] = useState<string>();
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [userToDelete, setUserToDelete] = useState<ListUser | undefined>(undefined);
 
-    const { data: recordsResponse, isLoading, isError } = useUserRecords(pagination);
+    const { data: recordsResponse, isLoading, isError } = useUserRecords({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+        search,
+    });
 
     const deleteMutation = useArchiveUser();
 
@@ -136,8 +140,8 @@ export function UsersPageComponent() {
                     <input
                         type="text"
                         placeholder="Search by name or email"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
                         className="w-full h-9 pl-9 pr-3 rounded border border-outline-variant bg-surface-container-lowest text-xs text-on-surface placeholder:text-outline focus:border-primary focus:outline-none"
                     />
                 </div>

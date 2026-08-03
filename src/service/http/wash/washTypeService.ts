@@ -14,6 +14,7 @@ export const washTypeService = {
             params: {
                 pageIndex: pagination.pageIndex,
                 pageSize: pagination.pageSize,
+                search: pagination.search
             },
         });
         return response.data;

@@ -1,6 +1,7 @@
 ﻿export interface PagedRequest {
     pageIndex: number;
     pageSize: number;
+    search: string | undefined;
 }
 
 export interface PagedList<T> {

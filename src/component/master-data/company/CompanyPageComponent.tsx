@@ -19,8 +19,13 @@ export function CompanyRoute() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<CompanyItem | undefined>(undefined);
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+    const [search, setSearch] = useState<string>();
 
-    const { data: recordsResponse, isLoading, isError } = useCompanyRecords(pagination);
+    const { data: recordsResponse, isLoading, isError } = useCompanyRecords({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+        search,
+    });
 
     const updateMutation = useUpdateCompany();
     const createMutation = useCreateCompany();
@@ -109,17 +114,32 @@ export function CompanyRoute() {
                         <p className="text-xs text-on-surface-variant">Active partner associations and carrier clients.</p>
                     </div>
                 </div>
+                <div className="flex">
+                    <div className="relative w-full sm:w-80">
+                        <svg className="absolute left-3 top-2.5 text-outline" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input
+                            type="text"
+                            placeholder="Search by name"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="w-full h-9 pl-9 pr-3 rounded border border-outline-variant bg-surface-container-lowest text-xs text-on-surface placeholder:text-outline focus:border-primary focus:outline-none"
+                        />
+                    </div>
 
-                <button
-                    onClick={handleOpenCreate}
-                    className="inline-flex items-center gap-2 h-[36px] px-4 rounded bg-primary text-sm font-semibold text-on-primary hover:bg-primary/90 transition-colors cursor-pointer shadow-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
-                >
-                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <line x1="12" y1="5" x2="12" y2="19" />
-                        <line x1="5" y1="12" x2="19" y2="12" />
-                    </svg>
-                    Add Company
-                </button>
+                    <button
+                        onClick={handleOpenCreate}
+                        className="inline-flex items-center gap-2 h-[36px] px-4 rounded bg-primary text-sm font-semibold text-on-primary hover:bg-primary/90 transition-colors cursor-pointer shadow-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    >
+                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        Add Company
+                    </button>
+                </div>
             </div>
 
             {isLoading ? (

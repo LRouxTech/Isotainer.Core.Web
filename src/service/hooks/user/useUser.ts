@@ -13,8 +13,8 @@ export function useUserRecords(pagination : PagedRequest) {
     const pageSize = pagination?.pageSize ?? 10;
 
     return useQuery<PagedList<ListUser>>({
-        queryKey: ['user', 'records', pageIndex, pageSize],
-        queryFn: () => userManagementService.getUserList({ pageIndex, pageSize }),
+        queryKey: ['user', 'records', pageIndex, pageSize, pagination.search],
+        queryFn: () => userManagementService.getUserList({ pageIndex, pageSize, search: pagination.search }),
         placeholderData: previousData => previousData
     });
 }

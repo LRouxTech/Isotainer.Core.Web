@@ -35,12 +35,14 @@ export function HomePageComponent() {
     const [isWashInstructionModalOpen, setIsWashInstructionModalOpen] = useState(false);
     const [editingWashInstruction, setEditingWashInstructionItem] = useState<WashInstructionItem | undefined>(undefined);
     const [pagination, setPagination] = useState({pageIndex: 0, pageSize: 10});
+    const [search, setSearch] = useState<string>('');
 
-    const {data: recordsResponse, isLoading, isError} = useIsotainerTankRecords(pagination);
-    const {data: companyData, isLoading: isLoadingCompanies} = useCompanyRecords({pageIndex: 0, pageSize: 100});
+    const {data: recordsResponse, isLoading, isError} = useIsotainerTankRecords({pageIndex: pagination.pageIndex, pageSize: pagination.pageSize, search: search});
+    const {data: companyData, isLoading: isLoadingCompanies} = useCompanyRecords({pageIndex: 0, pageSize: 100, search: ""});
     const {data: washStatusData, isLoading: isLoadingWashStatuses} = useWashStatusRecords({
         pageIndex: 0,
-        pageSize: 100
+        pageSize: 100,
+        search: "",
     });
 
     const updateMutation = useUpdateIsotainerTank();
@@ -234,16 +236,35 @@ export function HomePageComponent() {
                     </p>
                 </div>
 
-                <button
-                    onClick={handleOpenCreate}
-                    className="inline-flex items-center gap-2 h-[36px] px-4 rounded bg-primary text-sm font-semibold text-on-primary hover:bg-primary/90 transition-colors cursor-pointer shadow-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
-                >
-                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <line x1="12" y1="5" x2="12" y2="19"/>
-                        <line x1="5" y1="12" x2="19" y2="12"/>
-                    </svg>
-                    Add Tank
-                </button>
+                <div className="flex">
+                    <div className="relative w-full sm:w-80">
+                        <svg className="absolute left-3 top-2.5 text-outline" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input
+                            type="text"
+                            placeholder="Search by tanknumber"
+                            value={search}
+                            onChange={(e) => {
+                                setSearch(e.target.value);
+                                setPagination((prev) => ({ ...prev, pageIndex: 0 })); // Reset to first page
+                            }}
+                            className="w-full h-9 pl-9 pr-3 rounded border border-outline-variant bg-surface-container-lowest text-xs text-on-surface placeholder:text-outline focus:border-primary focus:outline-none"
+                        />
+                    </div>
+
+                    <button
+                        onClick={handleOpenCreate}
+                        className="inline-flex items-center gap-2 h-[36px] px-4 rounded bg-primary text-sm font-semibold text-on-primary hover:bg-primary/90 transition-colors cursor-pointer shadow-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    >
+                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Add Tank
+                    </button>
+                </div>
             </div>
 
 

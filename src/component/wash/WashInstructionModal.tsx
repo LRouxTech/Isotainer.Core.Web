@@ -14,8 +14,8 @@ interface WashInstructionModalProps {
 }
 
 export function WashInstructionModal({ isOpen, onClose, onSubmit, defaultValues, isSubmitting = false }: WashInstructionModalProps) {
-    const { data: washTypeData, isLoading: isLoadingWashTypes } = useWashTypeRecords({ pageIndex: 0, pageSize: 100 });
-    const { data: tankData, isLoading: isLoadingTanks } = useIsotainerTankRecords({ pageIndex: 0, pageSize: 100 });
+    const { data: washTypeData, isLoading: isLoadingWashTypes } = useWashTypeRecords({ pageIndex: 0, pageSize: 100, search: "" });
+    const { data: tankData, isLoading: isLoadingTanks } = useIsotainerTankRecords({ pageIndex: 0, pageSize: 100, search: "" });
     const [initialInstructedOn] = useState(() => {
         if (defaultValues?.instructedOn) {
             return defaultValues.instructedOn;

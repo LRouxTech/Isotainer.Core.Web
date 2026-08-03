@@ -8,8 +8,8 @@ export function useWashStatusRecords(pagination : PagedRequest) {
     const pageSize = pagination?.pageSize ?? 10;
 
     return useQuery<PagedList<WashStatusItem>>({
-        queryKey: ['washStatus', 'records', pageIndex, pageSize],
-        queryFn: () => washStatusService.getWashStatusList({ pageIndex, pageSize }),
+        queryKey: ['washStatus', 'records', pageIndex, pageSize, pagination.search],
+        queryFn: () => washStatusService.getWashStatusList({ pageIndex, pageSize, search: pagination.search }),
         placeholderData: previousData => previousData
     });
 }

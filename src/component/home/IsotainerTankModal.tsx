@@ -13,7 +13,7 @@ interface IsotainerTankModalProps {
 }
 
 export function IsotainerTankModal({ isOpen, onClose, onSubmit, defaultValues, isSubmitting = false }: IsotainerTankModalProps) {
-    const { data: companyData, isLoading: isLoadingCompanies } = useCompanyRecords({ pageIndex: 0, pageSize: 100 });
+    const { data: companyData, isLoading: isLoadingCompanies } = useCompanyRecords({ pageIndex: 0, pageSize: 100, search: "" });
 
     const form = useForm({
         defaultValues: {

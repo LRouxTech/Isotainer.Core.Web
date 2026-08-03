@@ -13,8 +13,8 @@ export function useIsotainerTankRecords(pagination : PagedRequest) {
     const pageSize = pagination?.pageSize ?? 10;
 
     return useQuery<PagedList<IsotainerTankItem>>({
-        queryKey: ['isotainerTank', 'records', pageIndex, pageSize],
-        queryFn: () => isotainerTankService.getIsotainerTankList({ pageIndex, pageSize }),
+        queryKey: ['isotainerTank', 'records', pageIndex, pageSize, pagination.search],
+        queryFn: () => isotainerTankService.getIsotainerTankList({ pageIndex, pageSize, search: pagination.search }),
         placeholderData: previousData => previousData
     });
 }

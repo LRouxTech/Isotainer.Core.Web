@@ -19,7 +19,11 @@ export function WashInstructionPageComponent() {
     const [isDeleteWashModalOpen, setIsDeleteWashModalOpen] = useState(false);
     const [deleteWashItem, setDeleteWashItem] = useState<WashInstructionItem | undefined>(undefined);
 
-    const { data: recordsResponse, isLoading, isError } = useWashInstructionRecords(pagination, isFinishedFilter ?? false);
+    const { data: recordsResponse, isLoading, isError } = useWashInstructionRecords({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+        search: "",
+    }, isFinishedFilter ?? false);
 
     const createWashInstructionMutation = useCreateWashInstruction();
     const deletWashInstructionMutation = useDeleteWashInstruction();
@@ -108,49 +112,8 @@ export function WashInstructionPageComponent() {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-on-surface">Washing Instruction Board</h1>
-                    <p className="text-sm text-on-surface-variant mt-0.5">
-                        Manage and schedule isotainer decontamination workflows.
-                    </p>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 rounded-lg border border-outline-variant/60 bg-surface-container-lowest">
-                    <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Awaiting Wash</span>
-                    <div className="flex items-baseline gap-2 mt-2">
-                        <span className="text-2xl font-extrabold text-on-surface">12</span>
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-error/10 text-error">-3</span>
-                    </div>
-                </div>
-
-                <div className="p-4 rounded-lg border border-outline-variant/60 bg-surface-container-lowest">
-                    <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">In Progress</span>
-                    <div className="flex items-baseline gap-2 mt-2">
-                        <span className="text-2xl font-extrabold text-on-surface">08</span>
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-500/10 text-blue-600">+2</span>
-                    </div>
-                </div>
-
-                <div className="p-4 rounded-lg border border-outline-variant/60 bg-surface-container-lowest">
-                    <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Scheduled Today</span>
-                    <div className="mt-2">
-                        <span className="text-2xl font-extrabold text-on-surface">24</span>
-                    </div>
-                </div>
-
-                <div className="p-4 rounded-lg border border-outline-variant/60 bg-surface-container-lowest">
-                    <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Avg. Turnaround</span>
-                    <div className="mt-2">
-                        <span className="text-2xl font-extrabold text-on-surface">4.2h</span>
-                    </div>
-                </div>
-            </div>
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                {/* Left Side: Title & Description */}
                 <div>
                     <h1 className="text-2xl font-bold text-on-surface">Washing Instruction Board</h1>
                     <p className="text-sm text-on-surface-variant mt-0.5">

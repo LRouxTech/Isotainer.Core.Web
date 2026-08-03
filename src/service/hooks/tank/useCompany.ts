@@ -21,8 +21,8 @@ export function useCompanyRecords(pagination : PagedRequest) {
     const pageSize = pagination?.pageSize ?? 10;
 
     return useQuery<PagedList<CompanyItem>>({
-        queryKey: ['company', 'records', pageIndex, pageSize],
-        queryFn: () => companyService.getCompaniesList({ pageIndex, pageSize }),
+        queryKey: ['company', 'records', pageIndex, pageSize, pagination.search],
+        queryFn: () => companyService.getCompaniesList({ pageIndex, pageSize, search: pagination.search }),
         placeholderData: previousData => previousData
     });
 }

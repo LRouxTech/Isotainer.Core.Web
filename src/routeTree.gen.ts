@@ -20,7 +20,6 @@ import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedMasterDataIndexRouteImport } from './routes/_authenticated.master-data.index'
 import { Route as AuthenticatedUsersNewRouteImport } from './routes/_authenticated.users.new'
 import { Route as AuthenticatedMasterDataWashTypeRouteImport } from './routes/_authenticated.master-data.wash-type'
-import { Route as AuthenticatedMasterDataGeneralCostRouteImport } from './routes/_authenticated.master-data.general-cost'
 import { Route as AuthenticatedMasterDataCompanyRouteImport } from './routes/_authenticated.master-data.company'
 import { Route as AuthenticatedUsersEditUserIdRouteImport } from './routes/_authenticated.users.edit.$userId'
 
@@ -80,12 +79,6 @@ const AuthenticatedMasterDataWashTypeRoute =
     path: '/wash-type',
     getParentRoute: () => AuthenticatedMasterDataRoute,
   } as any)
-const AuthenticatedMasterDataGeneralCostRoute =
-  AuthenticatedMasterDataGeneralCostRouteImport.update({
-    id: '/general-cost',
-    path: '/general-cost',
-    getParentRoute: () => AuthenticatedMasterDataRoute,
-  } as any)
 const AuthenticatedMasterDataCompanyRoute =
   AuthenticatedMasterDataCompanyRouteImport.update({
     id: '/company',
@@ -107,7 +100,6 @@ export interface FileRoutesByFullPath {
   '/users': typeof AuthenticatedUsersRouteWithChildren
   '/washing': typeof AuthenticatedWashingRoute
   '/master-data/company': typeof AuthenticatedMasterDataCompanyRoute
-  '/master-data/general-cost': typeof AuthenticatedMasterDataGeneralCostRoute
   '/master-data/wash-type': typeof AuthenticatedMasterDataWashTypeRoute
   '/users/new': typeof AuthenticatedUsersNewRoute
   '/master-data/': typeof AuthenticatedMasterDataIndexRoute
@@ -120,7 +112,6 @@ export interface FileRoutesByTo {
   '/washing': typeof AuthenticatedWashingRoute
   '/': typeof AuthenticatedIndexRoute
   '/master-data/company': typeof AuthenticatedMasterDataCompanyRoute
-  '/master-data/general-cost': typeof AuthenticatedMasterDataGeneralCostRoute
   '/master-data/wash-type': typeof AuthenticatedMasterDataWashTypeRoute
   '/users/new': typeof AuthenticatedUsersNewRoute
   '/master-data': typeof AuthenticatedMasterDataIndexRoute
@@ -137,7 +128,6 @@ export interface FileRoutesById {
   '/_authenticated/washing': typeof AuthenticatedWashingRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/master-data/company': typeof AuthenticatedMasterDataCompanyRoute
-  '/_authenticated/master-data/general-cost': typeof AuthenticatedMasterDataGeneralCostRoute
   '/_authenticated/master-data/wash-type': typeof AuthenticatedMasterDataWashTypeRoute
   '/_authenticated/users/new': typeof AuthenticatedUsersNewRoute
   '/_authenticated/master-data/': typeof AuthenticatedMasterDataIndexRoute
@@ -154,7 +144,6 @@ export interface FileRouteTypes {
     | '/users'
     | '/washing'
     | '/master-data/company'
-    | '/master-data/general-cost'
     | '/master-data/wash-type'
     | '/users/new'
     | '/master-data/'
@@ -167,7 +156,6 @@ export interface FileRouteTypes {
     | '/washing'
     | '/'
     | '/master-data/company'
-    | '/master-data/general-cost'
     | '/master-data/wash-type'
     | '/users/new'
     | '/master-data'
@@ -183,7 +171,6 @@ export interface FileRouteTypes {
     | '/_authenticated/washing'
     | '/_authenticated/'
     | '/_authenticated/master-data/company'
-    | '/_authenticated/master-data/general-cost'
     | '/_authenticated/master-data/wash-type'
     | '/_authenticated/users/new'
     | '/_authenticated/master-data/'
@@ -275,13 +262,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMasterDataWashTypeRouteImport
       parentRoute: typeof AuthenticatedMasterDataRoute
     }
-    '/_authenticated/master-data/general-cost': {
-      id: '/_authenticated/master-data/general-cost'
-      path: '/general-cost'
-      fullPath: '/master-data/general-cost'
-      preLoaderRoute: typeof AuthenticatedMasterDataGeneralCostRouteImport
-      parentRoute: typeof AuthenticatedMasterDataRoute
-    }
     '/_authenticated/master-data/company': {
       id: '/_authenticated/master-data/company'
       path: '/company'
@@ -301,7 +281,6 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedMasterDataRouteChildren {
   AuthenticatedMasterDataCompanyRoute: typeof AuthenticatedMasterDataCompanyRoute
-  AuthenticatedMasterDataGeneralCostRoute: typeof AuthenticatedMasterDataGeneralCostRoute
   AuthenticatedMasterDataWashTypeRoute: typeof AuthenticatedMasterDataWashTypeRoute
   AuthenticatedMasterDataIndexRoute: typeof AuthenticatedMasterDataIndexRoute
 }
@@ -309,8 +288,6 @@ interface AuthenticatedMasterDataRouteChildren {
 const AuthenticatedMasterDataRouteChildren: AuthenticatedMasterDataRouteChildren =
   {
     AuthenticatedMasterDataCompanyRoute: AuthenticatedMasterDataCompanyRoute,
-    AuthenticatedMasterDataGeneralCostRoute:
-      AuthenticatedMasterDataGeneralCostRoute,
     AuthenticatedMasterDataWashTypeRoute: AuthenticatedMasterDataWashTypeRoute,
     AuthenticatedMasterDataIndexRoute: AuthenticatedMasterDataIndexRoute,
   }

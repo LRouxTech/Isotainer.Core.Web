@@ -14,6 +14,7 @@ export const companyService = {
             params: {
                 pageIndex: pagination.pageIndex,
                 pageSize: pagination.pageSize,
+                search: pagination.search
             },
         });
         return response.data;

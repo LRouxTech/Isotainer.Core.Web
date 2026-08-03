@@ -15,6 +15,7 @@ export const isotainerTankService = {
             params: {
                 pageIndex: pagination.pageIndex,
                 pageSize: pagination.pageSize,
+                search: pagination.search
             },
         });
         return response.data;

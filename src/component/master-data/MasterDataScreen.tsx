@@ -1,6 +1,5 @@
 ﻿import React from 'react';
 import {Link} from "@tanstack/react-router";
-import {useGeneralCostStats} from "../../service/hooks/finance/useGeneralCost.ts";
 import {useCompanyStats} from "../../service/hooks/tank/useCompany.ts";
 import {useWashTypeStats} from "../../service/hooks/wash/useWashType.ts";
 
@@ -16,25 +15,10 @@ interface MasterDataItem {
 
 export function MasterDataScreen() {
 
-    const { data: generalCostStats, isLoading: isGeneralCostLoading, isError: isGeneralCostError } = useGeneralCostStats();
     const { data: companyStats, isLoading: isCompanyLoading, isError: isCompanyError } = useCompanyStats();
     const { data: washTypeStats, isLoading: isWashTypeLoading, isError: isWashTypeError } = useWashTypeStats();
 
     const masterDataItems: MasterDataItem[] = [
-        {
-            id: 'general-cost',
-            title: 'General Cost',
-            description: 'Configure standard pricing templates, logistics cost matrices, and flat overhead service fees.',
-            count: isGeneralCostLoading ? '...' : isGeneralCostError ? 0 : generalCostStats?.recordCount ?? 0,
-            lastUpdated: isGeneralCostLoading ? 'Loading...' : isGeneralCostError ? 'Unavailable' : generalCostStats?.lastUpdated ?? 'Never',
-            isLoading: isGeneralCostLoading,
-            icon: (
-                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <line x1="12" y1="1" x2="12" y2="23"/>
-                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                </svg>
-            ),
-        },
         {
             id: 'company',
             title: 'Company',
