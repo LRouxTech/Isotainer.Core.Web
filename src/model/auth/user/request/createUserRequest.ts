@@ -3,6 +3,6 @@
     surname : string;
     userName : string;
     email : string;
-    roles : Array<string>; // guids
-    permissions : Array<string>; // guids
+    roleIds : Array<string>; // guids
+    permissionIds : Array<string>; // guids
 }

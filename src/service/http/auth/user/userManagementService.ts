@@ -16,7 +16,7 @@ export const userManagementService = {
     },
 
     updateUser: async (request: UpdateUserRequest): Promise<UserDetailResponse> => {
-        const response = await axiosInstance.put<UserDetailResponse>(`${API_BASE_URL}/update`, request);
+        const response = await axiosInstance.post<UserDetailResponse>(`${API_BASE_URL}/update`, request);
         return response.data;
     },
 

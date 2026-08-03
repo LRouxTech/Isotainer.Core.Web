@@ -16,7 +16,6 @@ import { Route as AuthenticatedWashingRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated.users'
 import { Route as AuthenticatedMasterDataRouteImport } from './routes/_authenticated.master-data'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated.home'
-import { Route as AuthenticatedFinancialsRouteImport } from './routes/_authenticated.financials'
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated.users.index'
 import { Route as AuthenticatedMasterDataIndexRouteImport } from './routes/_authenticated.master-data.index'
 import { Route as AuthenticatedUsersNewRouteImport } from './routes/_authenticated.users.new'
@@ -57,11 +56,6 @@ const AuthenticatedMasterDataRoute = AuthenticatedMasterDataRouteImport.update({
 const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
   id: '/home',
   path: '/home',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedFinancialsRoute = AuthenticatedFinancialsRouteImport.update({
-  id: '/financials',
-  path: '/financials',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
@@ -108,7 +102,6 @@ const AuthenticatedUsersEditUserIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
-  '/financials': typeof AuthenticatedFinancialsRoute
   '/home': typeof AuthenticatedHomeRoute
   '/master-data': typeof AuthenticatedMasterDataRouteWithChildren
   '/users': typeof AuthenticatedUsersRouteWithChildren
@@ -123,7 +116,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
-  '/financials': typeof AuthenticatedFinancialsRoute
   '/home': typeof AuthenticatedHomeRoute
   '/washing': typeof AuthenticatedWashingRoute
   '/': typeof AuthenticatedIndexRoute
@@ -139,7 +131,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
-  '/_authenticated/financials': typeof AuthenticatedFinancialsRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/master-data': typeof AuthenticatedMasterDataRouteWithChildren
   '/_authenticated/users': typeof AuthenticatedUsersRouteWithChildren
@@ -158,7 +149,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
-    | '/financials'
     | '/home'
     | '/master-data'
     | '/users'
@@ -173,7 +163,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
-    | '/financials'
     | '/home'
     | '/washing'
     | '/'
@@ -188,7 +177,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_authenticated'
     | '/login'
-    | '/_authenticated/financials'
     | '/_authenticated/home'
     | '/_authenticated/master-data'
     | '/_authenticated/users'
@@ -257,13 +245,6 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof AuthenticatedHomeRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/financials': {
-      id: '/_authenticated/financials'
-      path: '/financials'
-      fullPath: '/financials'
-      preLoaderRoute: typeof AuthenticatedFinancialsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/users/': {
@@ -355,7 +336,6 @@ const AuthenticatedUsersRouteWithChildren =
   AuthenticatedUsersRoute._addFileChildren(AuthenticatedUsersRouteChildren)
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedFinancialsRoute: typeof AuthenticatedFinancialsRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedMasterDataRoute: typeof AuthenticatedMasterDataRouteWithChildren
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRouteWithChildren
@@ -364,7 +344,6 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedFinancialsRoute: AuthenticatedFinancialsRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedMasterDataRoute: AuthenticatedMasterDataRouteWithChildren,
   AuthenticatedUsersRoute: AuthenticatedUsersRouteWithChildren,

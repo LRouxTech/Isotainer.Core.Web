@@ -12,8 +12,12 @@ export function UserFormPageComponent() {
     const userId = params.userId as string;
     const isEditMode = Boolean(userId);
 
-    const handleCancel = () => {
-        navigate({ to: '/users' });
+    const handleCancel = async () => {
+       await navigate({
+           to: '/users',
+           search: {},
+           replace: true,
+       });
     };
 
     const createMutation = useCreateUser();
@@ -34,24 +38,34 @@ export function UserFormPageComponent() {
         },
         onSubmit: async ({ value }) => {
             const fullUserName = `${value.name.trim()} ${value.surname.trim()}`.trim() || value.username;
-
-            const payload = {
-                userId: userId,
-                name: value.name,
-                surname: value.surname,
-                userName: value.username || fullUserName,
-                email: value.email,
-                roles: value.role ? [value.role] : [],
-                permissions: value.permissions,
-            };
-
             if (isEditMode && userId) {
+                const payload = {
+                    userId: userId ?? "",
+                    name: value.name,
+                    surname: value.surname,
+                    userName: value.username || fullUserName,
+                    email: value.email,
+                    roleIds: value.role ? [value.role] : [],
+                    permissionIds: value.permissions,
+                };
                 await updateMutation.mutateAsync(payload);
             } else {
+                const payload = {
+                    name: value.name,
+                    surname: value.surname,
+                    userName: value.username || fullUserName,
+                    email: value.email,
+                    roleIds: value.role ? [value.role] : [],
+                    permissionIds: value.permissions,
+                };
                 await createMutation.mutateAsync(payload);
             }
 
-            navigate({ to: '/users' });
+            await navigate({
+                to: '/users',
+                search: {},
+                replace: true,
+            });
         },
     });
 
