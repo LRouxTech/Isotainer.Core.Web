@@ -1,13 +1,18 @@
 ﻿import { useState } from 'react';
 import { useForm } from '@tanstack/react-form';
-import {useLoginMutation} from "../../service/hooks/auth/userLoginMutation.tsx";
-import type {UserLoginRequest} from "../../model/auth/user/request/userLoginRequest.ts";
+import { useLoginMutation } from "../../service/hooks/auth/userLoginMutation.tsx";
+import type { UserLoginRequest } from "../../model/auth/user/request/userLoginRequest.ts";
+import {useResetPasswordMutation} from "../../service/hooks/auth/useAuth.ts";
 
 export function LoginPageComponent() {
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
 
+    const [resetError, setResetError] = useState<string | null>(null);
+    const [resetSuccessMessage, setResetSuccessMessage] = useState<string | null>(null);
+
     const loginMutation = useLoginMutation();
+    const resetPasswordMutation = useResetPasswordMutation();
 
     const form = useForm({
         defaultValues: {
@@ -15,6 +20,7 @@ export function LoginPageComponent() {
             password: '',
         },
         onSubmit: async ({ value }) => {
+            setResetSuccessMessage(null);
             const requestPayload: UserLoginRequest = {
                 userName: value.username,
                 password: value.password,
@@ -23,6 +29,28 @@ export function LoginPageComponent() {
             loginMutation.mutate(requestPayload);
         },
     });
+
+    const handleForgotPassword = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setResetSuccessMessage(null);
+        setResetError(null);
+
+        const currentUsername = form.getFieldValue('username');
+
+        if (!currentUsername) {
+            setResetError('Please enter your email or username above to reset your password.');
+            return;
+        }
+
+        resetPasswordMutation.mutate(
+            { email: currentUsername },
+            {
+                onSuccess: () => {
+                    setResetSuccessMessage(`Password reset link has been sent to ${currentUsername}`);
+                },
+            }
+        );
+    };
 
     return (
         <div className="flex min-h-screen w-screen items-center justify-center bg-background p-6 font-sans antialiased selection:bg-primary-container selection:text-on-primary-container">
@@ -46,6 +74,18 @@ export function LoginPageComponent() {
                 {loginMutation.isError && (
                     <div className="mb-5 rounded bg-error-container p-3 text-sm text-on-error-container font-medium border border-error/20">
                         {(loginMutation.error).message || 'Invalid username or password.'}
+                    </div>
+                )}
+
+                {resetPasswordMutation.isError && (
+                    <div className="mb-5 rounded bg-error-container p-3 text-sm text-on-error-container font-medium border border-error/20">
+                        {(resetPasswordMutation.error as Error).message || 'Failed to request password reset.'}
+                    </div>
+                )}
+
+                {resetSuccessMessage && (
+                    <div className="mb-5 rounded bg-emerald-500/10 p-3 text-sm text-emerald-700 font-medium border border-emerald-500/20">
+                        {resetSuccessMessage}
                     </div>
                 )}
 
@@ -73,9 +113,9 @@ export function LoginPageComponent() {
                                     Username or Email
                                 </label>
                                 <div className="relative flex items-center h-[36px]">
-                  <span className="absolute left-3 text-outline">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
-                  </span>
+                                    <span className="absolute left-3 text-outline">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+                                    </span>
                                     <input
                                         id={field.name}
                                         name={field.name}
@@ -94,6 +134,11 @@ export function LoginPageComponent() {
                             </div>
                         )}
                     </form.Field>
+                    {resetError && (
+                        <div className="mb-5 rounded bg-error-container p-3 text-sm text-on-error-container font-medium border border-error/20">
+                            {resetError}
+                        </div>
+                    )}
 
                     <form.Field
                         name="password"
@@ -111,9 +156,9 @@ export function LoginPageComponent() {
                                     Password
                                 </label>
                                 <div className="relative flex items-center h-[36px]">
-                  <span className="absolute left-3 text-outline">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                  </span>
+                                    <span className="absolute left-3 text-outline">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                    </span>
                                     <input
                                         id={field.name}
                                         name={field.name}
@@ -177,9 +222,14 @@ export function LoginPageComponent() {
                 </form>
 
                 <div className="mt-5 text-center">
-                    <a href="#forgot" className="text-sm font-bold text-primary hover:underline">
-                        Forgot Password?
-                    </a>
+                    <button
+                        type="button"
+                        onClick={handleForgotPassword}
+                        disabled={resetPasswordMutation.isPending}
+                        className="text-sm font-bold text-primary hover:underline focus:outline-none disabled:opacity-50 cursor-pointer"
+                    >
+                        {resetPasswordMutation.isPending ? 'Requesting Reset...' : 'Forgot Password?'}
+                    </button>
                 </div>
 
                 <hr className="my-6 border-outline-variant" />

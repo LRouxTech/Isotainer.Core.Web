@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SetPasswordRouteImport } from './routes/set-password'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.index'
@@ -23,6 +25,16 @@ import { Route as AuthenticatedMasterDataWashTypeRouteImport } from './routes/_a
 import { Route as AuthenticatedMasterDataCompanyRouteImport } from './routes/_authenticated.master-data.company'
 import { Route as AuthenticatedUsersEditUserIdRouteImport } from './routes/_authenticated.users.edit.$userId'
 
+const SetPasswordRoute = SetPasswordRouteImport.update({
+  id: '/set-password',
+  path: '/set-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -95,6 +107,8 @@ const AuthenticatedUsersEditUserIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/set-password': typeof SetPasswordRoute
   '/home': typeof AuthenticatedHomeRoute
   '/master-data': typeof AuthenticatedMasterDataRouteWithChildren
   '/users': typeof AuthenticatedUsersRouteWithChildren
@@ -108,6 +122,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/set-password': typeof SetPasswordRoute
   '/home': typeof AuthenticatedHomeRoute
   '/washing': typeof AuthenticatedWashingRoute
   '/': typeof AuthenticatedIndexRoute
@@ -122,6 +138,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/set-password': typeof SetPasswordRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/master-data': typeof AuthenticatedMasterDataRouteWithChildren
   '/_authenticated/users': typeof AuthenticatedUsersRouteWithChildren
@@ -139,6 +157,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/reset-password'
+    | '/set-password'
     | '/home'
     | '/master-data'
     | '/users'
@@ -152,6 +172,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
+    | '/reset-password'
+    | '/set-password'
     | '/home'
     | '/washing'
     | '/'
@@ -165,6 +187,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_authenticated'
     | '/login'
+    | '/reset-password'
+    | '/set-password'
     | '/_authenticated/home'
     | '/_authenticated/master-data'
     | '/_authenticated/users'
@@ -181,10 +205,26 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SetPasswordRoute: typeof SetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/set-password': {
+      id: '/set-password'
+      path: '/set-password'
+      fullPath: '/set-password'
+      preLoaderRoute: typeof SetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -335,6 +375,8 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SetPasswordRoute: SetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

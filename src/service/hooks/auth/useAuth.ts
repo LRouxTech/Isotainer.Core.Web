@@ -1,4 +1,7 @@
 ﻿import { createContext, useContext } from 'react';
+import {useMutation} from "@tanstack/react-query";
+import type {ResetPasswordRequest} from "../../../model/auth/user/request/resetPasswordRequest.ts";
+import {userAuthenticationService} from "../../http/auth/user/userAuthenticationService.ts";
 
 export interface AuthContextType {
     isAuthenticated: boolean;
@@ -16,3 +19,11 @@ export const useAuth = () => {
     }
     return context;
 };
+
+export function useResetPasswordMutation() {
+    return useMutation({
+        mutationFn: async (requestPayload: ResetPasswordRequest) => {
+            return await userAuthenticationService.resetPassword(requestPayload);
+        },
+    });
+}
