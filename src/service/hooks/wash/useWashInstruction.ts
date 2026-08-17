@@ -11,8 +11,8 @@ export function useWashInstructionRecords(pagination : PagedRequest, isFinished 
     const pageSize = pagination?.pageSize ?? 10;
 
     return useQuery<PagedList<WashInstructionItem>>({
-        queryKey: ['washInstruction', 'records', pageIndex, pageSize],
-        queryFn: () => washInstructionService.getWashInstructionList({ pageIndex, pageSize }, isFinished),
+        queryKey: ['washInstruction', 'records', pageIndex, pageSize, pagination.search],
+        queryFn: () => washInstructionService.getWashInstructionList({ pageIndex, pageSize, search: pagination.search }, isFinished),
         placeholderData: previousData => previousData
     });
 }

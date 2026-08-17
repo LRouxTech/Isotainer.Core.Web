@@ -21,8 +21,8 @@ export function useWashTypeRecords(pagination : PagedRequest) {
     const pageSize = pagination?.pageSize ?? 10;
 
     return useQuery<PagedList<WashTypeItem>>({
-        queryKey: ['washType', 'records', pageIndex, pageSize],
-        queryFn: () => washTypeService.getWashTypesList({ pageIndex, pageSize }),
+        queryKey: ['washType', 'records', pageIndex, pageSize, pagination.search],
+        queryFn: () => washTypeService.getWashTypesList({ pageIndex, pageSize, search: pagination.search }),
         placeholderData: previousData => previousData
     });
 }

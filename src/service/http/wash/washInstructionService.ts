@@ -13,6 +13,7 @@ export const washInstructionService = {
             params: {
                 pageIndex: pagination.pageIndex,
                 pageSize: pagination.pageSize,
+                search: pagination.search,
                 isFinished: isFinished,
             },
         });
